@@ -29,15 +29,12 @@ const query = async (
   }
 };
 
-
 const searchText = async (target) => {
-
-   
   const tmp = await query(
     {
-      "$text": {
-        "$search": target
-      }
+      $text: {
+        $search: target,
+      },
     },
     {},
     10000
@@ -48,9 +45,7 @@ const searchText = async (target) => {
   } catch (err) {
     return err;
   }
-
 };
-
 
 const create = async (data) => {
   console.log("librarie users", data);
@@ -123,7 +118,7 @@ const createBack = async (data) => {
         };
 
         var serial = {
-          isLogin : false,
+          isLogin: false,
           email: data.email,
           username: data.username,
           password: data.password,
@@ -395,12 +390,30 @@ const getAllBySlugBrand = async (slug, pageNumber = 1) => {
   }
 };
 
+const balanceAdd = (owner, userTarget, balance) => {
+  return new Promise(async (resolve, reject) => {
+    const tmpUpdate = await model.findById(userTarget).exec();
+    tmpUpdate.balance = parseFloat(tmpUpdate.balance) + parseFloat(balance);
+    return resolve(await tmpUpdate.save());
+  });
+};
+
+const balanceSubtract = (owner, userTarget, balance) => {
+  return new Promise(async (resolve, reject) => {
+    const tmpUpdate = await model.findById(userTarget).exec();
+    tmpUpdate.balance = parseFloat(tmpUpdate.balance) - parseFloat(balance);
+    return resolve(await tmpUpdate.save());
+  });
+};
+
 export default {
-  searchText : searchText,
+  balanceSubtract: balanceSubtract,
+  balanceAdd: balanceAdd,
+  searchText: searchText,
   getByAuth: getByAuth,
   login: login,
   create: create,
-  createBack : createBack,
+  createBack: createBack,
   getByStatus: getByStatus,
   getAll: getAll,
   get: get,

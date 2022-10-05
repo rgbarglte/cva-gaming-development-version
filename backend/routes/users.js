@@ -4,15 +4,13 @@ import users from "./../libraries/users.js";
 const router = express.Router();
 
 router.post("/auth", async (req, res) => {
-  users.getByAuth(req.body.auth).then(data => res.json(data));
-   
+  users.getByAuth(req.body.auth).then((data) => res.json(data));
 });
 
 router.post("/search/text", async (req, res) => {
-  users.searchText(req.body.search).then(data => res.json(data));
-   
+  users.searchText(req.body.search).then((data) => res.json(data));
 });
- 
+
 router.post("/register", async (req, res) => {
   console.log("endpoint register", req.body);
   users
@@ -34,11 +32,14 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   console.log("endpoint login", req.body);
   users
-    .login({
-      email: req.body.email,
-      password: req.body.password,
-      currency: req.body.currency,
-    },req)
+    .login(
+      {
+        email: req.body.email,
+        password: req.body.password,
+        currency: req.body.currency,
+      },
+      req
+    )
     .then((data) => {
       res.send(data);
     })
@@ -47,7 +48,6 @@ router.post("/login", async (req, res) => {
     });
 });
 
- 
 router.post("/create", async (req, res) => {
   console.log("endpoint create", req.body);
   users
@@ -98,6 +98,22 @@ router.post("/get/all/by/brand", async (req, res) => {
 
 router.post("/get/all/by/brand/slug", async (req, res) => {
   res.send(await users.getAllBySlugBrand(req.body.slug));
+});
+
+router.post("/balance/subtract", async (req, res) => {
+  res.send(
+    await users.balanceSubtract(
+      req.body.token,
+      req.body.target,
+      req.body.balance
+    )
+  );
+});
+
+router.post("/balance/add", async (req, res) => {
+  res.send(
+    await users.balanceAdd(req.body.token, req.body.target, req.body.balance)
+  );
 });
 
 export default {
