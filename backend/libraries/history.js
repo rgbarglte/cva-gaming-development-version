@@ -90,7 +90,7 @@ const getAllLogin = async (pageNumber = 0, filter = {}) => {
   var limit = pageSize;
   var skip = pageSize * pageNumber;
   var search = {
-    type: "login"
+    type: "login",
   };
 
   if (lodash.isArray(filter.date)) {
@@ -100,16 +100,13 @@ const getAllLogin = async (pageNumber = 0, filter = {}) => {
     };
   }
 
-
- 
-  
   if (lodash.isString(filter.user)) {
-     search["$text"] = {
-      "$search": filter.user
-    }
+    search["$text"] = {
+      $search: filter.user,
+    };
   }
 
-  console.log(search)
+  console.log(search);
   const tmp = await query(search, {}, limit, {}, skip);
   try {
     return tmp;
