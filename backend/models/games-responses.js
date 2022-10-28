@@ -5,6 +5,8 @@ export default mongoose.model(
   new mongoose.Schema(
     {
       internal: { type: Object, required: true}, 
+      createDate : { type : String ,  default : new Date().toLocaleDateString("en-US")}
+
     },
     { timestamps: true }
   )

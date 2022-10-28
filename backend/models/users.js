@@ -33,6 +33,8 @@ export default mongoose.model(
       }},
       automatically_settle: { type: Boolean, required: false, default: false },
       agent_data: { type: Object, required: false, default: {} },
+      createDate : { type : String ,  default : new Date().toLocaleDateString("en-US")}
+
     },
     { timestamps: true }
   )
