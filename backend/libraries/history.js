@@ -14,11 +14,11 @@ const createLogin = async (userid, req, userdata = null) => {
     user: userdata,
   };
 
-  console.log("history", data);
+  // console.log("history", data);
   const temp = new model(data);
   try {
     const save = await temp.save();
-    console.log("insert", save);
+    // console.log("insert", save);
     return save;
   } catch (err) {
     return err;
@@ -33,11 +33,11 @@ const crateGame = async (userid, query, userdata = null) => {
     user: userdata,
   };
 
-  console.log("history", data);
+  // console.log("history", data);
   const temp = new model(data);
   try {
     const save = await temp.save();
-    console.log("insert", save);
+    // console.log("insert", save);
     return save;
   } catch (err) {
     return err;
@@ -94,13 +94,15 @@ const getAllLogin = async (pageNumber = 0, filter = {}) => {
   };
 
   if (lodash.isArray(filter.date)) {
-    search.createdAt = {
-      $gte: new Date(filter.date[0]),
-      $lt: new Date(filter.date[1]),
+    search.createDate = {
+      $gte: new Date(filter.date[0]).toLocaleDateString("en-US"),
+      $lt: new Date(filter.date[1]).toLocaleDateString("en-US"),
     };
+
+    
   }
 
-  if (lodash.isString(filter.user)) {
+  if (lodash.isString(filter.user) && filter.user && filter.user !== '' && filter.user !== ' ') {
     search["$text"] = {
       $search: filter.user,
     };

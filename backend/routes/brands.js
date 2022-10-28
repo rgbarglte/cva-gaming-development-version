@@ -23,6 +23,28 @@ router.post("/get/all/games", async (req, res) => {
   res.send(await games.getAllBySlugBrand(req.body.slug, req.body.page));
 });
 
+
+
+router.post("/update/field", async (req, res) => {
+  games.updateSingle(req.body.id,req.body.field,req.body.value).then(data => {
+    res.json(data);
+  })
+  
+});
+
+
+
+
+router.post("/update", async (req, res) => {
+  games.update(req.body.id,req.body.data).then(data => {
+    res.json(data);
+  })
+  
+});
+
+
+
+ 
 export default {
   endpoint: "/api/brands",
   router: router,

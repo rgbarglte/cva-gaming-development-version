@@ -24,6 +24,18 @@ const router = createRouter({
             auth:false,
         },
      },  
+
+     {
+        path: "/type/:slug", 
+        component: () =>
+            import ("../views/type.vue"),
+        meta: {
+            layout: false,
+            auth:false,
+        },
+     },  
+
+      
      {
         path: "/game/:slugBrand/:idGame", 
         component: () =>

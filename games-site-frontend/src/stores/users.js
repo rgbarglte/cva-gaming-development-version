@@ -29,10 +29,16 @@ export const usersAuthStore = defineStore({
         users.auth(localStorage.getItem("auth")).then((data) => {
           if (data.error) {
             this.login = false;
-            return resolve(this.login);
+            return resolve({
+              status : this.login,
+              data : data
+            });
           }
           this.login = true;
-          return resolve(this.login);
+          return resolve({
+            status : this.login,
+            data : data[0]
+          });
         });
       });
     },

@@ -4,8 +4,11 @@ import games from "./../libraries/games.js";
 const router = express.Router();
 
  
+router.post("/search/text", async (req, res) => {
+  res.json(await games.search(req.body.query));
+});
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res) => { 
   res.json(await games.getAll(req.body.page));
 });
 
@@ -44,8 +47,19 @@ router.post("/get/all/by/brand", async (req, res) => {
 });
 
 router.post("/get/all/by/brand/slug", async (req, res) => {
-  res.send(await games.getAllBySlugBrand(req.body.slug));
+  games.getAllBySlugBrand(req.body.slug).then(data => {
+    res.json(data);
+  })
+  
 });
+
+
+router.post("/get/all/by/type", async (req, res) => {
+ 
+  res.json(await games.getAllByType(req.body.slug,req.body.page));
+
+});
+ 
 
 export default {
     endpoint : '/api/games',

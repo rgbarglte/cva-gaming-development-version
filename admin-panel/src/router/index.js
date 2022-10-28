@@ -52,7 +52,17 @@ const router = createRouter({
         },
     },
 
+     
 
+    {
+        path: "/actividad/vivo/:id",
+        name: "",
+        component: () =>
+            import ("../views/actividad-vivo.vue"),
+        meta: {
+            layout: true,
+        },
+    },
 
     {
         path: "/movimientos",
@@ -81,6 +91,37 @@ const router = createRouter({
         name: "",
         component: () =>
             import ("../views/chat.vue"),
+        meta: {
+            layout: true,
+        },
+    },
+    {
+        path: "/juegos/categorias",
+        name: "",
+        component: () =>
+            import ("../views/categorias.vue"),
+        meta: {
+            layout: true,
+        },
+    },
+
+
+    {
+        path: "/juegos/marcas",
+        name: "",
+        component: () =>
+            import ("../views/marcas.vue"),
+        meta: {
+            layout: true,
+        },
+    },
+
+
+    {
+        path: "/agentes",
+        name: "",
+        component: () =>
+            import ("../views/agentes.vue"),
         meta: {
             layout: true,
         },

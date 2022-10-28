@@ -15,11 +15,13 @@ router.post("/register", async (req, res) => {
   console.log("endpoint register", req.body);
   users
     .create({
-      username: req.body.username,
+      username: req.body.nickname,
       email: req.body.email,
       password: req.body.password,
-      nickname: req.body.nickname,
-      currency: req.body.currency,
+      nickname: req.body.nickname, 
+      lastname: req.body.lastname, 
+      firstname: req.body.firstname,
+      currency:  'EUR',
     })
     .then((data) => {
       res.send(data);
@@ -47,6 +49,32 @@ router.post("/login", async (req, res) => {
       res.send(err);
     });
 });
+
+
+
+router.post("/login/admin", async (req, res) => {
+  console.log("endpoint login", req.body);
+  users
+    .loginAdmin(
+      {
+        email: req.body.email,
+        password: req.body.password, 
+      },
+      req
+    )
+    .then((data) => {
+      console.log("🚀 ~ file: users.js ~ line 75 ~ .then ~ data", data)
+      res.send(data);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+    
+
+});
+    
+   
+
 
 router.post("/create", async (req, res) => {
   console.log("endpoint create", req.body);
@@ -105,14 +133,15 @@ router.post("/balance/subtract", async (req, res) => {
     await users.balanceSubtract(
       req.body.token,
       req.body.target,
-      req.body.balance
+      req.body.balance,
+      req
     )
   );
 });
 
 router.post("/balance/add", async (req, res) => {
   res.send(
-    await users.balanceAdd(req.body.token, req.body.target, req.body.balance)
+    await users.balanceAdd(req.body.token, req.body.target, req.body.balance,req)
   );
 });
 

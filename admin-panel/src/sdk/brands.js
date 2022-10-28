@@ -36,4 +36,33 @@ export default {
         });
     });
   },
+
+  updateField: (id,field,value) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("brands/update/field", {
+          id:id,
+          field:field,
+          value: value,
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  update: (id,data) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("brands/update", {
+          id:id,
+          data:data, 
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
 };
+
+ 

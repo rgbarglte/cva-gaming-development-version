@@ -105,8 +105,30 @@
           </li>
 
           <li class="nav-item  "> 
-            <RouterLink class="nav-link" to="/asesores"> <i class="ni ni-tv-2 text-primary"></i> Asesores  <span class="badge badge-dot mr-4"><i class="bg-warning"></i></span>  </RouterLink> 
+            <RouterLink class="nav-link" to="/agentes"> <i class="ni ni-tv-2 text-primary"></i> Agentes  <span class="badge badge-dot mr-4"><i class="bg-info"></i></span>  </RouterLink> 
           </li>
+
+
+
+          <li class="nav-item  "> 
+            <RouterLink class="nav-link" to="/juegos/categorias"> <i class="ni ni-tv-2 text-primary"></i> Categorias de juegos <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+          </li>
+
+
+
+
+          <li class="nav-item  "> 
+            <RouterLink class="nav-link" to="/juegos/marcas"> <i class="ni ni-tv-2 text-primary"></i> Marcas de juegos <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+          </li>
+
+
+          <li class="nav-item    "> 
+            <RouterLink class="nav-link" to="/log/ip"> <i class="ni ni-tv-2 text-primary"></i> Registros ip <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+          </li>
+
+
+
+           
 
 
 
@@ -116,9 +138,7 @@
 
 
 
-          <li class="nav-item    "> 
-            <RouterLink class="nav-link" to="/log/ip"> <i class="ni ni-tv-2 text-primary"></i> Registros ip <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
-          </li>
+           
 
 
           <li class="nav-item    "> 

@@ -3,8 +3,12 @@ import games from "./../libraries/SDK/games/games.js";
 import users from "./users.js";
 import usersModel from "./../models/users.js";
 
+import history from "./history.js";
+import socket from "../services/socket.js";
 
-import history from './history.js'
+
+import brands from "../libraries/brands.js";
+import lodash from "lodash";
 
 
 const create = async (data) => {
@@ -167,6 +171,30 @@ const getAllBySlugCollection = async (slug, pagination) => {
     return err;
   }
 };
+
+const getAllByType = async (slug, pageNumber = 0) => {
+  var pageSize = 50;
+  var limit = pageSize;
+  var skip = pageSize * pageNumber;
+
+  const tmp = await query(
+    {
+      "internal.type": slug,
+    },
+    {},
+    limit,
+    {
+      "internal.position": 1,
+    },
+    skip
+  );
+  try {
+    return tmp;
+  } catch (err) {
+    return err;
+  }
+};
+
 /* 
    get the latest products created
   */
@@ -203,7 +231,22 @@ const getAllFeatured = async (limit) => {
 /*
    Search product
   */
-const search = (query, pagination) => {};
+const search = async (target, pagination = 0) => {
+  const tmp = await query(
+    {
+      $text: {
+        $search: target,
+      },
+    },
+    [],
+    1000
+  );
+  try {
+    return tmp;
+  } catch (err) {
+    return err;
+  }
+};
 /* 
    get all the products of a brand using its id
   */
@@ -229,161 +272,187 @@ const getAllByIdBrand = async (id, pageNumber = 1) => {
 };
 /* 
    get all the products of a brand using its slug
-  */
+  */ 
 const getAllBySlugBrand = async (slug, pageNumber = 1) => {
   var pageSize = 50;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
-
-  const tmp = await query(
-    {
-      "internal.category": slug,
-    },
-    {},
-    limit,
-    {},
-    skip
-  );
-  try {
-    return tmp;
-  } catch (err) {
-    return err;
-  }
-};
-
- 
-const getBalanceCallback = async (username, sessionId,req = null) => { 
-  const tmp = await users.query({"username": username , "internal.sessionid" : sessionId});
   return new Promise((resolve, reject) => {
-  try { 
-    if(tmp.length == 0) {
-      return reject({ status: "500", msg: "internal error" });
+  brands.query({slug:slug}).then(async (data) => {
+
+    if(lodash.isEmpty( data )) {
+      return resolve([]);
     }
-
-    
-if(req) {
-  
-  history.crateGame(tmp[0]._id,req,{
-    email : tmp[0].email,
-    username : tmp[0].username,
+     
+      const tmp = await query(
+        {
+          "internal.category": data[0].internal,
+        },
+        {},
+        limit,
+        {},
+        skip
+      ); 
+      resolve(tmp)
   })
-}
-
-    return resolve({ status: "200", balance: tmp[0].balance });
-  } catch (err) {
-    return reject({ status: "500", msg: "internal error" });
-  }
-});
+})
 };
 
+const getBalanceCallback = async (username, sessionId, req = null) => {
+  const tmp = await users.query({
+    username: username,
+    "internal.sessionid": sessionId,
+  });
+  return new Promise((resolve, reject) => {
+    try {
+      if (tmp.length == 0) {
+        return reject({ status: "500", msg: "internal error" });
+      }
 
+      if (req) {
+        history.crateGame(tmp[0]._id, req, {
+          email: tmp[0].email,
+          username: tmp[0].username,
+        });
+      }
 
-
-const debitBalanceCallback = async (username, sessionId,amount,req = null) => { 
-
-
-  
-  console.log('start -1');
-  var tmp = await users.query({"username": username , "internal.sessionid" : sessionId});
-
-  
-  return new Promise(async (resolve, reject) => {
-  try {
-    console.log('-1');
-
-    if(tmp.length == 0) {
+      return resolve({ status: "200", balance: tmp[0].balance });
+    } catch (err) {
       return reject({ status: "500", msg: "internal error" });
     }
-
-    console.log('-2');
-
-    tmp = await usersModel.findById(tmp[0]._id).exec(); 
-
-    console.log('-3');
-
-
-
-    tmp.balance = parseFloat(tmp.balance) - parseFloat(amount);
-
-    console.log('-4');
-    var test = await tmp.save() 
-    console.log('update user', test);
-
-if(req) {
-  
-  history.crateGame(tmp._id,req,{
-    email : tmp.email,
-    username : tmp.username,
-  })
-}
-
-
-
-    return resolve({ status: "200", balance:  tmp.balance });
-  } catch (err) {
-    console.log('error -1');
-    return reject({ status: "500", msg: "internal error" });
-  }
-});
+  });
 };
 
+const debitBalanceCallback = async (
+  username,
+  sessionId,
+  amount,
+  req = null
+) => {
+  // console.log('start -1');
+  var tmp = await users.query({
+    username: username,
+    "internal.sessionid": sessionId,
+  });
 
-
-
-
-
-
-
-const creditBalanceCallback = async (username, sessionId,amount,req = null) => { 
-
-  console.log('start -1');
-  var tmp = await users.query({"username": username , "internal.sessionid" : sessionId});
-
-  
   return new Promise(async (resolve, reject) => {
-  try {
-    console.log('-1');
+    try {
+      // console.log('-1');
 
-    if(tmp.length == 0) {
+      if (tmp.length == 0) {
+        return reject({ status: "500", msg: "internal error" });
+      }
+
+      // console.log('-2');
+
+      tmp = await usersModel.findById(tmp[0]._id).exec();
+
+      // console.log('-3');
+     var  balance_prev = parseFloat(tmp.balance);
+      tmp.balance = parseFloat(tmp.balance) - parseFloat(amount);
+       
+      const socketClient = socket.getIo();
+
+      socketClient.to("webclient-" + tmp._id).emit("balance", {
+        balance: tmp.balance,
+      });
+
+      console.log({
+        balance_prev : balance_prev,
+        balance_result: tmp.balance,
+        amount : parseFloat(amount)
+      })
+
+      socketClient.to("activity-" + tmp._id).emit("debit-game", {
+        balance_prev : balance_prev,
+        balance_result: tmp.balance,
+        amount : parseFloat(amount)
+      });
+
+      // console.log('-4');
+      var test = await tmp.save();
+      // console.log('update user', test);
+
+      if (req) {
+        history.crateGame(tmp._id, req, {
+          email: tmp.email,
+          username: tmp.username,
+        });
+      }
+
+      return resolve({ status: "200", balance: tmp.balance });
+    } catch (err) {
+      console.log("error -1 debit", tmp);
       return reject({ status: "500", msg: "internal error" });
     }
+  });
+};
 
-    console.log('-2');
+const creditBalanceCallback = async (
+  username,
+  sessionId,
+  amount,
+  req = null
+) => {
+  console.log("start -1");
+  var tmp = await users.query({
+    username: username,
+    "internal.sessionid": sessionId,
+  });
 
-    tmp = await usersModel.findById(tmp[0]._id).exec(); 
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log("-1");
 
-    console.log('-3');
+      if (tmp.length == 0) {
+        return reject({ status: "500", msg: "internal error" });
+      }
 
+      console.log("-2");
 
+      tmp = await usersModel.findById(tmp[0]._id).exec();
 
-    tmp.balance = parseFloat(tmp.balance) + parseFloat(amount);
+      console.log("-3");
 
-    console.log('-4');
-    var test = await tmp.save() 
-    console.log('update user', test);
+      var  balance_prev = parseFloat(tmp.balance);
 
+      tmp.balance = parseFloat(tmp.balance) + parseFloat(amount);
 
-    
-if(req) {
-  
-  history.crateGame(tmp._id,req,{
-    email : tmp.email,
-    username : tmp.username,
-  })
-}
+      const socketClient = socket.getIo();
 
+      socketClient.to("webclient-" + tmp._id).emit("balance", {
+        balance: tmp.balance,
+      });
 
-    return resolve({ status: "200", balance:  tmp.balance });
-  } catch (err) {
-    console.log('error -1');
-    return reject({ status: "500", msg: "internal error" });
-  }
-});
+      socketClient.to("activity-" + tmp._id).emit("credit-game", {
+        balance_prev : balance_prev,
+        balance_result: tmp.balance,
+        amount : parseFloat(amount)
+      });
+
+      console.log("-4");
+      var test = await tmp.save();
+      console.log("update user", test);
+
+      if (req) {
+        history.crateGame(tmp._id, req, {
+          email: tmp.email,
+          username: tmp.username,
+        });
+      }
+
+      return resolve({ status: "200", balance: tmp.balance });
+    } catch (err) {
+      console.log("error -1 credit", tmp);
+      return reject({ status: "500", msg: "internal error" });
+    }
+  });
 };
 
 export default {
-  creditBalanceCallback : creditBalanceCallback,
-  debitBalanceCallback : debitBalanceCallback,
+  getAllByType: getAllByType,
+  creditBalanceCallback: creditBalanceCallback,
+  debitBalanceCallback: debitBalanceCallback,
   getBalanceCallback: getBalanceCallback,
   create: create,
   createDbInternal: createDbInternal,

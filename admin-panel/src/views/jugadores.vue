@@ -19,7 +19,7 @@
             <h3 class="mb-0">Jugadores</h3>
 
             <div class="row">
-              <div class="col-md-4" style="padding-top:20px">
+              <!-- <div class="col-md-4" style="padding-top:20px">
                 <div class="custom-control custom-radio">
                   <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
                   <label class="custom-control-label" for="customRadio1">Ver solo agentes</label>
@@ -32,14 +32,14 @@
                   <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input">
                   <label class="custom-control-label" for="customRadio3">Ver Todo</label>
                 </div>
-              </div>
+              </div> -->
 
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <div class="form-group">
                   <label for="example-datetime-local-input" class="form-control-label">Acciones</label><br />
 
                   <button class="btn btn-primary" @click.prevent="newUserModal()">Nuevo jugador</button>
-                  <button class="btn btn-outline-primary">Nuevo agente</button>
+                  <!-- <button class="btn btn-outline-primary">Nuevo agente</button> -->
 
                 </div>
               </div>
@@ -116,14 +116,17 @@
                     {{item.balance}}
                   </td>
                   <td>
-                    <button class="btn btn-primary btn-sm">+</button>
-                    <button class="btn btn-outline-primary btn-sm">-</button>
+                    <button class="btn btn-primary btn-sm" @click="editBalanceModal(item)">+ / -</button>
+                    <!-- <button class="btn btn-outline-primary btn-sm">-</button> -->
                   </td>
                   <td>
                     {{item.createdAt}}
                   </td>
                   <td>
                     <a :href="'/jugadores/' + item._id" class="btn btn-primary btn-sm">Ver / Editar perfil</a>
+                  </td>
+                  <td>
+                    <a :href="'/actividad/vivo/' + item._id" class="btn btn-primary btn-sm">Vista en vivo</a>
                   </td>
                   <td class="text-right">
                     <button class="btn btn-outline-danger btn-sm">Eliminar jugador</button>
@@ -383,26 +386,126 @@
               </form>
             </el-tab-pane>
           </el-tabs>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           <button type="button" class="btn btn-primary" @click.prevent="saveUser()">Crear usuario</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  
+   
+  <!-- Modal -->
+  <div class="modal fade" id="editBalance" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Editar balance</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+
+
+
+          <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Detalles</th>
+                  <th scope="col">Balance</th> 
+                  <th scope="col" v-if="editBalance.balance !== 0"><b>Nuevo balance</b></th> 
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar rounded-circle mr-3">
+                        <img alt="Image placeholder"
+                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + editBalance.user.email">
+                      </a>
+                      <div class="media-body">
+                        <span class="mb-0 text-sm">{{editBalance.user.email}}</span>
+                      </div>
+                    </div>
+                  </th>
+                  <td>
+                    {{editBalance.user.balance}}
+                    
+                    <span class="text-success" v-if="editBalance.type == 'add'">+ {{editBalance.balance}}</span>
+
+                    <span class="text-danger" v-if="editBalance.type == 'subtract'">- {{editBalance.balance}}</span>
+
+                  </td> 
+
+                  <td v-if="editBalance.balance !== 0"> 
+                    <span class="text-info" v-if="editBalance.type == 'add'">{{parseFloat(editBalance.balance) + parseFloat(editBalance.user.balance)}}</span> 
+                    <span class="text-info" v-if="editBalance.type == 'subtract'">{{parseFloat(editBalance.user.balance ) - parseFloat(editBalance.balance)}}</span>
+
+                  </td>
+                 
+                    
+                 
+                </tr>
+              </tbody>
+            </table>
+
+
+
+
+          <div class="col-12">
+            <label class="form-control-label" style="display:block">Tipo de operacion</label>
+            <el-radio-group v-model="editBalance.type">
+             <el-radio label="add" size="large" border>Agregar</el-radio>
+             <el-radio label="subtract" size="large" border>Restar</el-radio>
+            </el-radio-group>
+          </div>
+
+          <el-divider border-style="dashed" />
+          <div class="col-12">
+            <label class="form-control-label" style="display:block">Monto</label>
+            <el-radio-group v-model="editBalance.balance">
+             <el-radio label="50" size="large" border>50</el-radio>
+             <el-radio label="100" size="large" border>100</el-radio>
+             <el-radio label="150" size="large" border>150</el-radio>
+             <el-radio label="250" size="large" border>250</el-radio>
+             <el-radio label="350" size="large" border>350</el-radio>
+             <el-radio label="450" size="large" border>450</el-radio>
+             <el-radio label="1000" size="large" border>1000</el-radio>
+            </el-radio-group>
+          </div>
+
+
+ <el-divider border-style="dashed" />
+
+          <div class="col-12">
+            <label class="form-control-label" style="display:block">O puedes ingresar un monto</label>
+            <el-input-number
+    v-model="editBalance.balance"
+    :min="1"
+    :max="15000"
+    controls-position="right"
+    size="large"
+    @change="handleChange"
+    style="width:100%;"
+  />
+          </div>
+
+
+ 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" @click.prevent="saveBalance()">Editar balance</button>
         </div>
       </div>
     </div>
@@ -434,6 +537,11 @@ export default {
       },
       loading: {
         users: true,
+      },
+      editBalance : {
+        type : 'add',
+        balance : 0,
+        user : {}
       },
       users: [],
       brands : [],
@@ -509,12 +617,69 @@ export default {
         )
 
         $('#newUser').modal('hide')
-        this.users();
+        this.loadUsers();
       })
     },
+    saveBalance() {
+      console.log(this.editBalance);
+
+      if(this.editBalance.type == "add" ) {
+        sdk.users.balanceAdd(true,this.editBalance.user._id,this.editBalance.balance).then(data => {
+        if (data.error) {
+          return this.$toast.show(
+            data.message,
+            {
+              position: "bottom-right"
+            }
+          )
+        }
+
+        this.$toast.success(
+          "El usuario fue editado correctamente",
+          {
+            position: "bottom-right"
+          }
+        )
+
+        $('#editBalance').modal('hide')
+        this.loadUsers();
+      })
+      }
+
+
+      if(this.editBalance.type == "subtract" ) {
+        sdk.users.balanceSubtract(true,this.editBalance.user._id,this.editBalance.balance).then(data => {
+        if (data.error) {
+          return this.$toast.show(
+            data.message,
+            {
+              position: "bottom-right"
+            }
+          )
+        }
+
+        this.$toast.success(
+          "El usuario fue editado correctamente",
+          {
+            position: "bottom-right"
+          }
+        )
+
+        $('#editBalance').modal('hide')
+        this.loadUsers();
+      })
+      }
+       
+    },
+
+     
 
     newUserModal() {
       $('#newUser').modal('show')
+    },
+    editBalanceModal(user) {
+      this.editBalance.user = user;
+      $('#editBalance').modal('show')
     }
 
   },

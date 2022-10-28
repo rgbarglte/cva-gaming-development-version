@@ -8,6 +8,7 @@ import generator from "generate-password";
 import { v4 as uuidv4 } from "uuid";
 
 import history from "./history.js";
+import activity from "./activity.js";
 
 const query = async (
   filters = {},
@@ -77,7 +78,11 @@ const create = async (data) => {
           email: data.email,
           username: data.username,
           password: data.password,
-          nickname: data.password,
+          nickname: data.username,
+          profile: {
+            lastname: data.lastname,
+            firstname: data.firstname,
+          },
           passwordConstant: passwordConstant,
           authToken: sign(authTokenSettings, settings.jwtSecret),
           internal: dataInternal.response,
@@ -188,6 +193,49 @@ const login = async (data, req = null) => {
           console.log("login tmpUpdate", tmpUpdate);
           return resolve(await tmpUpdate.save());
         });
+    });
+  });
+};
+
+const loginAdmin = async (data, req = null) => {
+console.log("🚀 ~ file: users.js ~ line 201 ~ loginAdmin ~ data", data)
+
+  
+  return new Promise((resolve, reject) => {
+    query({
+      email: data.email,
+      password: data.password,
+      isAdmin: true,
+    }).then(async (tmp) => {
+      console.log("🚀 ~ file: users.js ~ line 210 ~ returnnewPromise ~ tmp", tmp)
+      if (tmp.length == 0) {
+        return resolve({
+          error: true,
+        });
+      }
+      const socket = uuidv4();
+
+      const authTokenSettings = {
+        time: Date(),
+        email: tmp[0].email,
+        username: tmp[0].username,
+        _id: tmp[0]._id,
+        socket: socket,
+      };
+      console.log("🚀 ~ file: users.js ~ line 225 ~ returnnewPromise ~ authTokenSettings", authTokenSettings)
+
+      
+ 
+
+      const tmpUpdate = await model.findById(tmp[0]._id).exec();
+      console.log("🚀 ~ file: users.js ~ line 228 ~ returnnewPromise ~ tmpUpdate", tmpUpdate)
+      
+      tmpUpdate.authToken = sign(authTokenSettings, settings.jwtSecret);
+      tmpUpdate.socket = socket;
+      tmpUpdate.passwordConstant = tmpUpdate.password;
+
+
+      return resolve(await tmpUpdate.save());
     });
   });
 };
@@ -390,18 +438,60 @@ const getAllBySlugBrand = async (slug, pageNumber = 1) => {
   }
 };
 
-const balanceAdd = (owner, userTarget, balance) => {
+const balanceAdd = (owner, userTarget, balance, req) => {
   return new Promise(async (resolve, reject) => {
     const tmpUpdate = await model.findById(userTarget).exec();
     tmpUpdate.balance = parseFloat(tmpUpdate.balance) + parseFloat(balance);
+
+    // add activity
+    activity.createBalanceUpdate(
+      tmpUpdate._id,
+      req,
+      tmpUpdate,
+      {
+        userid: 123,
+        email: "raates@gmail.com",
+        firstname: "admin",
+        lastname: "general",
+      },
+      "add",
+      {
+        target: parseFloat(balance),
+        old: parseFloat(tmpUpdate.balance),
+        new: parseFloat(balance) + parseFloat(tmpUpdate.balance),
+      }
+    );
+    // ---------------------------
+
     return resolve(await tmpUpdate.save());
   });
 };
 
-const balanceSubtract = (owner, userTarget, balance) => {
+const balanceSubtract = (owner, userTarget, balance, req) => {
   return new Promise(async (resolve, reject) => {
     const tmpUpdate = await model.findById(userTarget).exec();
     tmpUpdate.balance = parseFloat(tmpUpdate.balance) - parseFloat(balance);
+
+    // add activity
+    activity.createBalanceUpdate(
+      tmpUpdate._id,
+      req,
+      tmpUpdate,
+      {
+        userid: 123,
+        email: "raates@gmail.com",
+        firstname: "admin",
+        lastname: "general",
+      },
+      "subtract",
+      {
+        target: parseFloat(balance),
+        old: parseFloat(tmpUpdate.balance),
+        new: parseFloat(balance) - parseFloat(tmpUpdate.balance),
+      }
+    );
+    // ---------------------------
+
     return resolve(await tmpUpdate.save());
   });
 };
@@ -427,4 +517,5 @@ export default {
   getAllBySlugBrand: getAllBySlugBrand,
   getBySlug: getBySlug,
   query: query,
+  loginAdmin: loginAdmin,
 };

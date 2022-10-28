@@ -17,6 +17,15 @@ import { usersAuthStore } from '@/stores/users.js';
 
 usersAuthStore().start()
  
+
+
+
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+ 
+app.use(ElementPlus)
+
+
 app.use(router) 
 
 

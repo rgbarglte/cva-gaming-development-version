@@ -13,6 +13,23 @@ export default {
     });
   },
 
+   
+
+  
+  getAllByType: (slug, page = 1) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("games/get/all/by/type", {
+          page: page,
+          slug: slug,
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
+
   getAllByBrand: (slug, page = 1) => {
     return new Promise((resolve, reject) => {
       client
@@ -44,6 +61,18 @@ export default {
         .POST("games/get/embed", {
           id: id,
           auth : auth
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
+  search: (query = null) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("games/search/text", {
+          query : query
         })
         .then((data) => {
           resolve(data);

@@ -50,7 +50,7 @@ export default {
   login: (email, password) => {
     return new Promise((resolve, reject) => {
       client
-        .POST("users/login", {
+        .POST("users/login/admin", {
           email: email,
           password: password,
           currency: "EUR",
@@ -84,4 +84,34 @@ export default {
         });
     });
   },
+
+  balanceAdd: (auth,target,balance) => {
+    console.log(auth,target,balance)
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/balance/add", {
+          token: auth,
+          target : target,
+          balance : balance,
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
+  balanceSubtract: (auth,target,balance) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/balance/subtract", {
+          token: auth,
+          target : target,
+          balance : balance,
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
 };

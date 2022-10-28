@@ -1,5 +1,8 @@
 import model from "./../models/games.js";
+import modelBrand from "./../models/brands.js";
 import products from "./../libraries/SDK/games/games.js";
+import slug from 'limax';
+
 
 const create = async (data) => {
   const temp = new model(data);
@@ -12,6 +15,19 @@ const create = async (data) => {
   }
 };
  
+const createDBTEST = async (data) => {
+  const temp = new modelBrand(data);
+  try {
+    const save = await temp.save();
+    console.log("insert", save);
+    return save;
+  } catch (err) {
+    return err;
+  }
+};
+ 
+ 
+
 const query = async (
     filters = {},
     fields = [],
@@ -20,7 +36,7 @@ const query = async (
     skip = {}, 
   ) => {
     try {
-      return await model
+      return await modelBrand
         .find(filters)
         .select(fields)
         .limit(limit)
@@ -42,7 +58,7 @@ const query = async (
   distinct
 ) => {
   try {
-    return await model
+    return await modelBrand
       .find(filters)
       .select(fields)
       .limit(limit)
@@ -55,7 +71,7 @@ const query = async (
   }
 };
 
-const getAll = async (pageNumber = 1) => {
+const getAllOld = async (pageNumber = 1) => {
  
   var pageSize = 50;
   var limit = pageSize;
@@ -71,6 +87,26 @@ const getAll = async (pageNumber = 1) => {
   }
 };
  
+
+
+
+const getAll = async (pageNumber = 1) => {
+ 
+  var pageSize = 50;
+  var limit = pageSize;
+  var skip = pageSize * pageNumber;
+
+  const tmp = await query({}, {}, limit, {
+    
+  }, skip);
+  try { 
+    return tmp;
+  } catch (err) {
+    return err;
+  }
+};
+ 
+
 const getByStatus = async (status = true) => {
   const tmp = await query({
     active: status,
@@ -93,7 +129,32 @@ const getBySlug = async (slug) => {
   }
 };
 
-const update = () => {};
+const updateSingle = (id,field,value) => {
+  return new Promise(async (resolve, reject) => {
+  const tmpUpdate = await modelBrand.findById(id).exec(); 
+  tmpUpdate[field] = value; 
+  return resolve(await tmpUpdate.save());
+  })
+};
+
+
+
+
+const update = (id,data) => {
+  return new Promise(async (resolve, reject) => {
+  const tmpUpdate = await modelBrand.findById(id).exec(); 
+  tmpUpdate['active'] = data['active'];
+  tmpUpdate['isDelete'] = data['isDelete'];
+  tmpUpdate['activeLoginOnly'] = data['activeLoginOnly'];
+  tmpUpdate['activeGroupOnly'] = data['activeGroupOnly'];
+  tmpUpdate['name'] = data['name'];
+  tmpUpdate['slug'] = data['slug'];
+  tmpUpdate['internal'] = data['internal'];
+  
+  return resolve(await tmpUpdate.save());
+  })
+};
+
 
 const remove = () => {};
 
@@ -207,6 +268,35 @@ const getAllBySlugBrand = async (slug, pageNumber = 1) => {
   }
 };
 
+
+
+
+
+ 
+
+ 
+
+
+const createDbInternal = () => {
+  console.log('createDbInternal')
+  getAllOld().then((data) => {
+  console.log('test' , data)
+  data.forEach((element) => {
+
+      console.log('forEach' , element)
+
+      createDBTEST({
+      name: element.replace("-", " "),
+      slug: slug(element),
+      internal: element,
+    });
+  });
+});
+};
+
+
+ 
+
 export default {
   create: create, 
   getByStatus: getByStatus,
@@ -220,4 +310,6 @@ export default {
   getAllBySlugBrand: getAllBySlugBrand,
   getBySlug: getBySlug,
   query: query,
+  updateSingle: updateSingle,
+  update : update,
 };

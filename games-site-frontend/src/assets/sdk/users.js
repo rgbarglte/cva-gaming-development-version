@@ -14,12 +14,15 @@ export default {
         });
     });
   },
-  register: (email, password) => {
+  register: (email, password,username,firstname,lastname) => {
     return new Promise((resolve, reject) => {
       client
         .POST("users/register", {
           email: email,
           password: password,
+          lastname: lastname,
+          nickname: username,
+          firstname: firstname,
           currency: "EUR",
         })
         .then((data) => {
