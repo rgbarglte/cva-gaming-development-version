@@ -10,7 +10,7 @@ export default {
     },
     connect : (auth) => {
         return new Promise(async (resolve, reject) => {
-        socket = io('https://cvagaming.com');
+          socket = io('https://cvagaming.com');
           socket.on('connect', () => { 
              console.log('Successfully connected!');  
              socket.emit('teste' , {

@@ -76,8 +76,7 @@ router.post("/login/admin", async (req, res) => {
    
 
 
-router.post("/create", async (req, res) => {
-  console.log("endpoint create", req.body);
+router.post("/create", async (req, res) => { 
   users
     .createBack(req.body)
     .then((data) => {
@@ -92,6 +91,7 @@ router.post("/", async (req, res) => {
   res.json(await users.getAll(req.body.page));
 });
 
+
 router.post("/get", async (req, res) => {
   res.send(await users.get(req.body.id));
 });
@@ -99,7 +99,9 @@ router.post("/get", async (req, res) => {
 router.post("/get/embed", async (req, res) => {
   res.send(await users.getEmbed(req.body.id));
 });
-
+router.post("/get/all/agents", async (req, res) => {
+  res.send(await users.getAllAgents(req.body.page));
+});
 router.post("/get/all/last", async (req, res) => {
   res.send(await users.getAllLast(req.body.page));
 });
@@ -144,6 +146,16 @@ router.post("/balance/add", async (req, res) => {
     await users.balanceAdd(req.body.token, req.body.target, req.body.balance,req)
   );
 });
+
+
+
+router.post("/betwin/add", async (req, res) => {
+  res.send(
+    await users.balanceAdd(req.body.token, req.body.target, req.body.balance,req)
+  );
+});
+
+
 
 export default {
   endpoint: "/api/users",

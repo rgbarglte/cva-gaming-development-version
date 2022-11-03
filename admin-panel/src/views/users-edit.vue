@@ -78,42 +78,43 @@
             <div class="card-header bg-white border-0">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h3 class="mb-0">My account</h3>
+                  <h3 class="mb-0">Editar usuario</h3>
                 </div>
                 <div class="col-4 text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                  <a href="#!" class="btn btn-sm btn-primary">Guardar cambios</a>
                 </div>
               </div>
             </div>
+            
             <div class="card-body">
               <form>
-                <h6 class="heading-small text-muted mb-4">User information</h6>
+                <h6 class="heading-small text-muted mb-4">Informacion del usuario</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-username">Username</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="lucky.jesse">
+                        <label class="form-control-label" for="input-username">Nombre de usuario</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" v-model="forms.user.username" >
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-email">Email address</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="jesse@example.com">
+                        <label class="form-control-label" for="input-email">E-Mail</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="jesse@example.com" v-model="forms.user.email" >
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">First name</label>
-                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="Lucky">
+                        <label class="form-control-label" for="input-first-name">Nombre</label>
+                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name"  v-model="forms.user.profile.firstname" >
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Last name</label>
-                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
+                        <label class="form-control-label" for="input-last-name">Apellido</label>
+                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" v-model="forms.user.profile.lastname">
                       </div>
                     </div>
                   </div>
@@ -125,28 +126,28 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-address">Address</label>
-                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                        <label class="form-control-label" for="input-address">Direccion</label>
+                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" v-model="forms.user.profile.address"  type="text">
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-city">City</label>
-                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="New York">
+                        <label class="form-control-label" for="input-city">Ciudad</label>
+                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" v-model="forms.user.profile.city" >
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-country">Country</label>
-                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="United States">
+                        <label class="form-control-label" for="input-country">Pais</label>
+                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" v-model="forms.user.profile.country"  >
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-country">Postal code</label>
-                        <input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Postal code">
+                        <label class="form-control-label" for="input-country">Codigo postal</label>
+                        <input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Postal code" v-model="forms.user.profile.zip" >
                       </div>
                     </div>
                   </div>
@@ -156,8 +157,8 @@
                 <h6 class="heading-small text-muted mb-4">About me</h6>
                 <div class="pl-lg-4">
                   <div class="form-group">
-                    <label>About Me</label>
-                    <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                    <label>Sobre mi</label>
+                    <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">{{forms.user.profile.about}}</textarea>
                   </div>
                 </div>
               </form>
@@ -193,3 +194,108 @@
       </footer>
     </div>
 </template>
+
+
+
+
+<script>
+import sdk from '@/sdk/bundle.js';
+
+import { ElNotification } from 'element-plus'
+
+
+export default {
+  data() {
+    return {
+      login: {
+        email: '',
+        password: '',
+      },
+      chat: {
+        tager: null,
+        chats: []
+      },
+      activeTabNewForm: 'Usuario',
+      pagination: {
+        activity: 0,
+        brands: 0,
+      },
+      loading: {
+        activity: true,
+      },
+      editBalance: {
+        type: 'add',
+        balance: 0,
+        user: {}
+      },
+      activity: [],
+      brands: [],
+      forms: {
+        user: {
+          email: '',
+          password: '',
+          username: '',
+          nickname: '',
+          balance: 0,
+          isAgent: false,
+          automatically_settle: false,
+          enabledAllBrands: true,
+          brands: [],
+          enabledAllGames: true,
+          games: [],
+          agent_data: {
+            firstname: '',
+            lastname: '',
+            phone: '',
+            dni: ''
+          },
+          profile: {
+            firstname: '',
+            lastname: '',
+            address: '',
+            city: '',
+            country: '',
+            zip: '',
+            about: '',
+          },
+        }
+      }
+    };
+  },
+  created() { 
+    sdk.users.get(this.$route.params.id).then(response => {
+      // alert(JSON.stringify(response));
+      this.forms.user = response[0];
+    })
+  },
+  methods: {
+
+    // submitLogin() {
+    //   sdk.users.login(this.login.email, this.login.password).then(data => {
+    //     if (data.error) {
+    //       ElNotification({
+    //         title: 'Iniciar sesion',
+    //         message: "Contraseña o E-Mail erroneo.",
+    //         position: 'bottom-right',
+    //         duration: 0,
+    //       })
+    //       localStorage.setItem("auth", false);
+    //       return;
+    //     }
+    //     localStorage.setItem("auth", data.authToken);
+    //     ElNotification({
+    //       title: 'Iniciar sesion',
+    //       message: "Gracias por iniciar sesion.",
+    //       position: 'bottom-right',
+    //       duration: 0,
+    //     })
+    //     setTimeout(() => {
+    //       window.location.href = '/jugadores';
+    //     }, 1500)
+    //   })
+    // }
+  },
+};
+
+
+</script>
