@@ -9,11 +9,9 @@ var io, socket_;
 var activeSockets = {};
 var activeUsers = {};
 
-
 import pkg from "jsonwebtoken";
 const { verify, sign } = pkg;
 import settings from "./../settings.js";
-
 
 export default {
   getIo: () => {
@@ -66,6 +64,44 @@ export default {
           } catch (error) {}
         });
 
+        socket.on("connect-dashboard-chat", async (data) => {
+          var tmp = await users.query({ authToken: data.auth });
+
+          console.log("user connected dashboard 1", tmp);
+
+          try {
+            if (tmp.length == 0) {
+              return reject({ status: "500", msg: "internal error" });
+            }
+
+            const rooms = [
+              "webclient-" + tmp[0]._id,
+              "activity-" + tmp[0]._id,
+              "webchat-" + tmp[0]._id,
+            ];
+
+            socket.join(rooms);
+
+            // socket.join(tmp[0]._id);
+            tmp = await usersModel.findById(tmp[0]._id).exec();
+
+            console.log("debug 1");
+
+            if (!activeUsers.hasOwnProperty(tmp._id)) {
+              activeUsers[tmp._id] = {
+                userDetails: tmp._id,
+                sockets: [socket.id],
+              };
+            } else {
+              activeUsers[tmp._id].sockets.push(socket.id);
+            }
+
+            tmp.socket = socket.id;
+            var test = await tmp.save();
+            console.log("user connected dashboard - 2");
+          } catch (error) {}
+        });
+
         socket.on("back-activity-join-room", async (data) => {
           const rooms = ["activity-" + data.user];
           console.log(
@@ -85,31 +121,92 @@ export default {
         });
 
         socket.on("back-chat-send-chat", async (data) => {
-          const save = {
-            userid: data.userid,
-            type: "message",
-            message: data.msg,
-            to: data.to,
-            attach: null,
-          };
+          verify(data.auth, settings.jwtSecret, async function (err, decoded) {
+            const save = {
+              userid: decoded._id,
+              type: "message",
+              message: data.msg,
+              to: data.to,
+              attach: null,
+            };
 
-          chats.create(save).then((saveData) => {
-            if (activeUsers.hasOwnProperty(data.to)) {
-              activeUsers[data.to].sockets.forEach((socketId) => {
-                //This will send notification to each of the socket and thus you will receive the same notifications in each tab.
-                io.to(socketId).emit("chat-message", data);
-                console.log("chat-message", data);
-              });
-            } else {
-              // Exception handaling
-            }
+            data.userid = decoded._id;
+
+            console.log("back-chat-send-chat", save, data, decoded);
+
+            chats.create(save).then((saveData) => {
+              // if(data.hasOwnProperty('to')) {
+              //    socket.emit('reconnect-chat');
+              //    return true;
+              // }
+              if (activeUsers.hasOwnProperty(data.to)) {
+                activeUsers[data.to].sockets.forEach((socketId) => {
+                  console.log("to socketid ", socketId);
+                  //This will send notification to each of the socket and thus you will receive the same notifications in each tab.
+                  io.to(socketId).emit("chat-message", data);
+                  console.log("chat-message", data);
+                });
+              } else {
+                // Exception handaling
+              }
+            });
           });
+
+          // const save = {
+          //   userid: data.userid,
+          //   type: "message",
+          //   message: data.msg,
+          //   to: data.to,
+          //   attach: null,
+          // };
+
+          // chats.create(save).then((saveData) => {
+          //   if (activeUsers.hasOwnProperty(data.to)) {
+          //     activeUsers[data.to].sockets.forEach((socketId) => {
+          //       //This will send notification to each of the socket and thus you will receive the same notifications in each tab.
+          //       io.to(socketId).emit("chat-message", data);
+          //       console.log("chat-message", data);
+          //     });
+          //   } else {
+          //     // Exception handaling
+          //   }
+          // });
         });
 
         socket.on("client-chat-send-chat", async (data) => {
-          verify(auth, settings.jwtSecret, async function (err, decoded) {
+          verify(data.auth, settings.jwtSecret, async function (err, decoded) {
             if (err) {
               return resolve({ error: 1, msg: "Token no valid" });
+            }
+
+            console.log("client-chat-send-chat")
+
+            if (data.to == null) {
+              const save = {
+                userid: decoded._id,
+                type: "message",
+                message: data.msg,
+                to: decoded.agent_id,
+                attach: null,
+              };
+
+              console.log("client-chat-send-chat" ,save)
+
+              chats.create(save).then((saveData) => {
+                if (activeUsers.hasOwnProperty(decoded._id)) {
+                  activeUsers[decoded._id].sockets.forEach((socketId) => {
+                    io.to(socketId).emit("chat-message-callback", data);
+                    console.log("chat-message-callback", data);
+                  });
+                } 
+              }); 
+              if (activeUsers.hasOwnProperty(decoded.agent_id)) {
+                activeUsers[decoded.agent_id].sockets.forEach((socketId) => {
+                  io.to(socketId).emit("chat-message-client", data);
+                  console.log("chat-message", data);
+                });
+              }
+              return;
             }
 
             const save = {
@@ -120,23 +217,25 @@ export default {
               attach: null,
             };
 
-            chats.create(save).then((saveData) => {
+            console.log("client-chat-send-chat", save, data, decoded);
+
+            chats.create(save).then((saveData) => { 
+              if (activeUsers.hasOwnProperty(decoded._id)) {
+                activeUsers[decoded._id].sockets.forEach((socketId) => {
+                  io.to(socketId).emit("chat-message-callback", data);
+                  console.log("chat-message-callback", data);
+                });
+              } 
               if (activeUsers.hasOwnProperty(data.to)) {
                 activeUsers[data.to].sockets.forEach((socketId) => {
-                  //This will send notification to each of the socket and thus you will receive the same notifications in each tab.
                   io.to(socketId).emit("chat-message-client", data);
                   console.log("chat-message", data);
                 });
-              } else {
-                // Exception handaling
+              } else { 
               }
             });
           });
         });
-
-        // socket.on("client-send-msg", async (data) => {
-        //   io.to(data.target).emit(data.msg);
-        // });
 
         resolve(socket);
       });

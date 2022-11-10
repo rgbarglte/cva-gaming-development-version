@@ -1,8 +1,103 @@
 <template>
 
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" v-if="login" style="background:#060d15 !important">
-        <a class="navbar-brand" href="#">Hola <b>{{loginData.profile.firstname}} {{loginData.profile.lastname}}</b>!</a>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark hide-desktop show-mobil"
+        style="background: linear-gradient(183deg, #050c14, transparent) !important">
+        <div class="row" style="    width: 100% !important;
+    margin: 0;
+    padding: 0 !important;">
+            <div class="col-4">
+                <a class="navbar-brand" href="#">
+                    <img src="https://cva.poker/public/cdn/img/1.svg" class="img-fluid" style="    height: 70px;" />
+                </a>
+            </div>
+            <div class="col-4" style="  
+           
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    place-content: center;
+    align-items: center;
+    color: yellow;
+
+">
+                {{ loginData.balance }} <span class="material-symbols-outlined" style="    margin-left: 8px;">
+                    monetization_on
+                </span>
+            </div>
+
+
+
+
+
+            <div class="col-4" style="    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                    aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+
+
+
+
+
+
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="/" style="
+                    font-weight: 700;
+    font-size: 13px;
+font-family: 'Inter', sans-serif;
+text-transform:uppercase;
+                    ">Inicio</a>
+                </li>
+                <li class="nav-item active" v-for="item in 5">
+                    <a class="nav-link" href="#" style="
+                    font-weight: 700;
+    font-size: 13px;
+font-family: 'Inter', sans-serif;
+text-transform:uppercase;
+                    ">Link navbar</a>
+                </li>
+
+                <li class="nav-item active" v-if="login">
+                    <a class="nav-link" href="#">Mi cuenta</a>
+                </li>
+
+                <li class="nav-item active" v-if="login">
+                    <a class="nav-link" href="#" @click.prevent="logout()">Cerrar sesion</a>
+                </li>
+
+                <li class="nav-item active" v-if="!login">
+                    <a class="nav-link" href="#" @click.prevent="registerOpen()" v-if="login == false">Crear
+                        cuenta</a>
+                </li>
+
+                <li class="nav-item active" v-if="!login">
+                    <a class="nav-link" href="#" @click.prevent="openModal()" v-if="login == false">Ingresar</a>
+                </li>
+              
+
+            </ul>
+
+        </div>
+    </nav>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark hidde-mobil" v-if="login"
+        style="background:#060d15 !important">
+        <a class="navbar-brand" href="#">Hola <b>{{ loginData.profile.firstname }} {{ loginData.profile.lastname
+        }}</b>!</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
             aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -13,8 +108,7 @@
                     <a class="nav-link" href="#">Mi cuenta</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-warning" href="#">Balance: {{loginData.balance}} - <b>Recargar
-                            cuenta</b></a>
+                    <a class="nav-link text-warning" href="#">Balance: {{ loginData.balance }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Atencion al cliente</a>
@@ -24,9 +118,9 @@
 
                 <div
                     style="width: 100%;display: flex;align-items: center;justify-content: center;align-content: center;color:white">
-                    <img :src="'https://ui-avatars.com/api/?background=ffc107&bold=true&name=' + loginData.profile.firstname + ' '+ loginData.profile.lastname"
+                    <img :src="'https://ui-avatars.com/api/?background=ffc107&bold=true&name=' + loginData.profile.firstname + ' ' + loginData.profile.lastname"
                         style="height: 30px;width:30px;border-radius:100%;background:rgb(255,255,255,0.1);margin-right: 10px;display:inline-block" />
-                    <span>{{loginData.email}}</span>
+                    <span>{{ loginData.email }}</span>
                 </div>
             </span>
         </div>
@@ -36,7 +130,7 @@
 
 
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark hidde-mobil"
         style="background: linear-gradient(183deg, #050c14, transparent) !important">
         <a class="navbar-brand" href="#">
             <img src="https://cva.poker/public/cdn/img/1.svg" class="img-fluid" style="    height: 70px;" />
@@ -251,82 +345,51 @@ text-transform:uppercase;
 
 
 
-    <button class="btn btn-primary" style="    position: fixed;
+    <button class="btn btn-primary" v-if="login" style="    position: fixed;
     bottom: 0;
     right: 0;
     margin: 15px;
     border-radius: 30px; z-index: 1000;" @click.prevent="temp.chat.content = true">Chat</button>
 
-    <div v-if="temp.chat.content" style=" 
-    position: fixed;
-    bottom: 53px;
-    right: 0px;
-    margin: 15px;
-    border-radius: 5px; 
-    width: 236px;
-    background: white;
-    padding: 0;
-    z-index: 1000;
-">
-        <div class="col-12 text-rigth" style="
-    text-align: right;
-    padding: 0;
-    padding-left: 10px;
-    font-size: 1px !important;
-"><a href="#" @click.prevent="temp.chat.content = false">
-                <span class="material-symbols-outlined" style="
-    font-weight: 600;
-    font-size: medium;
-    margin: 5px;
-    color:black !important;
-"> close </span></a> </div>
-        <el-scrollbar height="376px" ref="scrollbarRef">
-            <div style="width:100%" v-for="item in temp.chat.chats">
-                <div style="padding:10px;display:flex; flex-direction:column;padding-right:20%"
-                    v-if="item.remote == true">
-                    <span style="font-size:9px;font-weight: bold;">CVA</span>
-
-                    <div style="width: 100%;">
-                        <div
-                            style="border-radius:8px;padding:10px;font-size:12px !important;color:white;background:#6201ff">
-                            {{item.msg}}
-                        </div>
-                    </div>
-                </div>
-
-
-                <div style="padding:10px;display:flex;flex-direction:column;padding-left:20%"
-                    v-if="item.remote == false">
-                    <!-- <span style="font-size:9px;font-weight: bold;">CVA</span> -->
-                    <div style="width: 100%;">
-                        <div style="    border-radius: 8px;
-    padding: 10px;
-    font-size: 12px !important;
-    color: #132723;
-    background: rgb(255 193 7)">
-                            {{item.msg}}
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-
-
-        </el-scrollbar>
-        <div class="col-12" style="    display: flex;
-    margin-bottom: 20px;padding-top:15px">
-            <el-input v-model="temp.chat.msg" :autosize="{ minRows: 1, maxRows: 4 }" type="textarea"
-                placeholder="Escriba un mensaje..." />
-            <button type="submit" class="form-control"
-                style="height: 40px;width: 49px;padding: 0px;background: rgb(255 193 7);border: #42461d;border-radius: 100px;display: flex;flex-direction: row;place-content: center;align-items: center;color: #3f431e;margin-left: 10px;"
-                @click.prevent="sendMessage()"><span class="material-symbols-outlined"> send </span></button>
-        </div>
-    </div>
-
+     
+    <wdigetChat v-if="login" />
 </template>
 
+<style scoped>
+@media (max-width: 600px) {
+    .hidde-mobil {
+        display: none !important;
+    }
 
+    .show-mobil {
+        display: flex !important;
+        width: 100% !important;
+        height: auto !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1000 !important;
+    }
+
+    .navbar-collapse { 
+    padding-bottom: 30px !important;
+    background: linear-gradient(359deg, rgb(5, 12, 20), transparent) !important;
+}
+
+    .navbar-dark .navbar-nav .active>.nav-link,
+    .navbar-dark .navbar-nav .nav-link.active,
+    .navbar-dark .navbar-nav .nav-link.show,
+    .navbar-dark .navbar-nav .show>.nav-link {
+        color: #fff;
+        text-align: center;
+    }
+}
+
+.hide-desktop {
+    display: none;
+}
+</style>
 <style>
 .menu-account {
     margin: 0;
@@ -454,6 +517,8 @@ text-transform:uppercase;
 
  
 <script>
+import wdigetChat from '@/components/chat.vue';
+
 import { usersAuthStore } from '@/stores/users.js';
 import sdk from '@/assets/sdk/bundle.js';
 
@@ -461,6 +526,9 @@ import { ElNotification } from 'element-plus'
 import socketClient from "@/assets/sdk/socket.js";
 
 export default {
+    components: {
+        wdigetChat
+    },
     data() {
         return {
             pagination: {
@@ -469,6 +537,10 @@ export default {
             },
             loading: {
                 games: false,
+            },
+            chat: {
+                message: null,
+                target: null
             },
             games: [],
             brands: [],
@@ -531,6 +603,10 @@ export default {
             loginData: {}
         };
     },
+
+
+
+
     async created() {
         await this.authStore.authCheck().then(data => {
             this.login = data.status;
@@ -541,22 +617,28 @@ export default {
                     socket.on('balance', (response) => {
                         this.loginData.balance = response.balance;
                     })
-                    socket.on('chat-message', (response) => {
-                        response.remote = true;
-                        this.temp.chat.chats.push(response)
-                    })
                 });
             }
-
         });
     },
+
+
+
+
+
     methods: {
-        sendMessage() {
-          const socket = socketClient.getIo() 
-          socket.emit() 
-          response.remote = true;
-          this.temp.chat.chats.push(response) 
-        },
+        // sendMessage() {
+        //     const socket = socketClient.getIo()
+        //     socket.emit('client-chat-send-chat', {
+        //         auth: localStorage.getItem('auth'),
+        //         msg: this.chat.message,
+        //         to: this.chat.target
+        //     })
+        //     this.chat.message = null;
+        //     // --- chat-message-client
+        //     //   response.remote = true;
+        //     //   this.temp.chat.chats.push(response) 
+        // },
         logout() {
             localStorage.removeItem('auth')
             window.location.reload();
@@ -573,7 +655,6 @@ export default {
                 this.temp.login.msg.error = false;
                 this.temp.login.msg.success = true;
                 this.temp.login.disabled = true;
-                // $('#loginModal').modal('hide');
                 ElNotification({
                     title: 'Iniciar sesion',
                     message: "Gracias por iniciar sesion.",

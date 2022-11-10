@@ -2,6 +2,9 @@ import settings from './settings.js';
 
 export default {
     POST : (method,params) => {
+        if(!params.auth) {
+            params.auth = localStorage.getItem('auth');
+        }
         const requestOptions = {
             method: "POST",
             headers: {

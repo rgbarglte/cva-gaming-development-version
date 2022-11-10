@@ -18,10 +18,10 @@ router.post("/register", async (req, res) => {
       username: req.body.nickname,
       email: req.body.email,
       password: req.body.password,
-      nickname: req.body.nickname, 
-      lastname: req.body.lastname, 
+      nickname: req.body.nickname,
+      lastname: req.body.lastname,
       firstname: req.body.firstname,
-      currency:  'EUR',
+      currency: "EUR",
     })
     .then((data) => {
       res.send(data);
@@ -50,33 +50,26 @@ router.post("/login", async (req, res) => {
     });
 });
 
-
-
 router.post("/login/admin", async (req, res) => {
   console.log("endpoint login", req.body);
   users
     .loginAdmin(
       {
         email: req.body.email,
-        password: req.body.password, 
+        password: req.body.password,
       },
       req
     )
     .then((data) => {
-      console.log("🚀 ~ file: users.js ~ line 75 ~ .then ~ data", data)
+      console.log("🚀 ~ file: users.js ~ line 75 ~ .then ~ data", data);
       res.send(data);
     })
     .catch((err) => {
       res.send(err);
     });
-    
-
 });
-    
-   
 
-
-router.post("/create", async (req, res) => { 
+router.post("/create", async (req, res) => {
   users
     .createBack(req.body)
     .then((data) => {
@@ -90,7 +83,6 @@ router.post("/create", async (req, res) => {
 router.post("/", async (req, res) => {
   res.json(await users.getAll(req.body.page));
 });
-
 
 router.post("/get", async (req, res) => {
   res.send(await users.get(req.body.id));
@@ -143,19 +135,43 @@ router.post("/balance/subtract", async (req, res) => {
 
 router.post("/balance/add", async (req, res) => {
   res.send(
-    await users.balanceAdd(req.body.token, req.body.target, req.body.balance,req)
+    await users.balanceAdd(
+      req.body.token,
+      req.body.target,
+      req.body.balance,
+      req
+    )
   );
 });
-
-
 
 router.post("/betwin/add", async (req, res) => {
   res.send(
-    await users.balanceAdd(req.body.token, req.body.target, req.body.balance,req)
+    await users.balanceAdd(
+      req.body.token,
+      req.body.target,
+      req.body.balance,
+      req
+    )
   );
 });
 
+router.post("/agents/detail", async (req, res) => {
+  res.send(await users.getAllAgentsDetails(req.body.date));
+});
+router.post("/agents/detail/users", async (req, res) => {
+  res.send(await users.getAllUsersDetailsByAgent(req.body.agent, req.body.date));
+});
 
+router.post("/games/history", async (req, res) => {
+  res.send(await users.getAllHistoryGameByUser(req.body.user, req.body.date));
+});
+ 
+
+
+router.post("/best/games", async (req, res) => {
+  res.send(await users.getBestPlayers(req.body.date));
+});
+ 
 
 export default {
   endpoint: "/api/users",

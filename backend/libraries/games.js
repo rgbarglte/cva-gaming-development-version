@@ -100,7 +100,15 @@ const getEmbed = async (auth = null, id) => {
           return;
         }
         // console.log('NO ERROR')
-        await games
+
+        if(lodash.isEmpty(data)) {
+          await games.getGame(tmp[0].internal.id).then((data) => {
+            return resolve(data);
+          });
+          // console.log('ERROR')
+          return; 
+        } else {
+          await games
           .getGame(
             tmp[0].internal.id,
             null,
@@ -112,6 +120,10 @@ const getEmbed = async (auth = null, id) => {
           .then((data) => {
             return resolve(data);
           });
+
+        }
+
+         
       });
     } catch (err) {
       return err;
@@ -348,6 +360,7 @@ const debitBalanceCallback = async (
       tmp = await usersModel.findById(tmp[0]._id).exec();
 
       // console.log('-3');
+      
      var  balance_prev = parseFloat(tmp.balance);
       tmp.balance = parseFloat(tmp.balance) - parseFloat(amount);
        

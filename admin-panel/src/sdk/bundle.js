@@ -5,6 +5,9 @@ import history from './history.js';
 import activity from './activity.js';
 import types from './types.js';
 import socket from './socket.js';
+import tools from './tools.js';
+
+import platform from './platform.js';
 
 export default {
     games : games,
@@ -13,5 +16,7 @@ export default {
     history  : history,
     activity  :activity,
     types  :types,
-    socket  :socket
+    socket  :socket,
+    tools : tools,
+    platform : platform
 }

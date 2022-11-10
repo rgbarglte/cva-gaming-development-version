@@ -119,6 +119,55 @@ const balanceTotalPages = () => {
   });
 };
 
+
+const balanceTotalPagesByUser = (user) => {
+  return new Promise((resolve, reject) => {
+    model.countDocuments(
+      {
+        type: "balance",
+        userid : user
+      },
+      function (err, count) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(count);
+        }
+      }
+    );
+  });
+};
+
+ 
+
+const getAllBalanceByUser = async (pageNumber = 0, filter = {} , user) => {
+  var pageSize = 30;
+  var limit = pageSize;
+  var skip = pageSize * pageNumber;
+  var search = {
+    type: "balance",
+    userid : user
+  };
+
+  if (lodash.isArray(filter.date)) {
+    search.createDate = {
+      $gte: new Date(filter.date[0]).toLocaleDateString("en-US"),
+      $lt: new Date(filter.date[1]).toLocaleDateString("en-US"),
+    };
+  }
+ 
+
+  const tmp = await query(search, {}, limit, { _id : -1}, skip);
+
+  console.log(search);
+  try {
+    return tmp;
+  } catch (err) {
+    return err;
+  }
+};
+
+
 const getAllBalance = async (pageNumber = 0, filter = {}) => {
   var pageSize = 30;
   var limit = pageSize;
@@ -165,6 +214,8 @@ const getAllBalance = async (pageNumber = 0, filter = {}) => {
 };
 
 export default {
+  balanceTotalPagesByUser : balanceTotalPagesByUser,
+  getAllBalanceByUser : getAllBalanceByUser,
   getAllLogin: getAllLogin,
   createLogin: createLogin,
   getAllBalance: getAllBalance,

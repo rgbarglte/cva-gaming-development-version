@@ -16,66 +16,44 @@
         <div class="card shadow">
           <div class="card-header border-0">
 
-            <h3 class="mb-0">Jugadores</h3>
+            <h3 class="mb-0" style="padding-bottom:30px;">
+              Jugadores
+              <button class="btn btn-primary" @click.prevent="newUserModal()">Nuevo jugador</button>
+            </h3>
 
             <div class="row">
-              <!-- <div class="col-md-4" style="padding-top:20px">
-                <div class="custom-control custom-radio">
-                  <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
-                  <label class="custom-control-label" for="customRadio1">Ver solo agentes</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
-                  <label class="custom-control-label" for="customRadio2">Ver solo jugadores</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input">
-                  <label class="custom-control-label" for="customRadio3">Ver Todo</label>
-                </div>
-              </div> -->
 
-              <div class="col-md-3">
-                <div class="form-group">
-                  <label for="example-datetime-local-input" class="form-control-label">Acciones</label><br />
 
-                  <button class="btn btn-primary" @click.prevent="newUserModal()">Nuevo jugador</button>
-                  <!-- <button class="btn btn-outline-primary">Nuevo agente</button> -->
+              <div class="col-12"></div>
 
-                </div>
+              <div class="col-md-8">
+                <el-select v-model="search.user" placeholder="Buscar jugador..." style="width: 100%" filterable
+                  @change="changeUser()" clearable>
+
+                  <el-option v-for="item in users" :key="item" :label="item.username" :value="item._id"
+                    style="height: 40px;">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar rounded-circle mr-3" style="height:30px;width:30px;">
+                        <img style="height:30px;width:30px;" alt="Image placeholder"
+                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.username">
+                      </a>
+                      <div class="media-body">
+                        <span class="mb-0 text-sm bold"><b>{{ item.username }}</b></span>
+                      </div>
+                    </div>
+                  </el-option>
+                </el-select>
+
               </div>
 
               <div class="col-md-4">
-                <div class="form-group">
-                  <label for="example-datetime-local-input" class="form-control-label">Filtrar por fecha de
-                    registro</label>
-                    <el-date-picker
-        v-model="search.date"
-        type="daterange"
-        start-placeholder="Start date"
-        end-placeholder="End date"
-        :default-time="[
-  new Date(2022, 1, 1, 0, 0, 0),
-  new Date(2022, 2, 1, 23, 59, 59),
-]"
-      />
-                </div>
+                <el-date-picker v-model="search.date" type="daterange" start-placeholder="Start date"
+                  end-placeholder="End date" :default-time="[
+                    new Date(2022, 1, 1, 0, 0, 0),
+                    new Date(2022, 2, 1, 23, 59, 59),
+                  ]" />
               </div>
 
-              <div class="col-md-10">
-                <div class="form-group">
-                  <label for="example-datetime-local-input" class="form-control-label">Buscar jugador</label>
-                  <input class="form-control form-control-alternative" type="text" id="example-datetime-local-input">
-                </div>
-              </div>
-
-              <div class="col-md-2">
-                <div class="form-group">
-                  <label for="example-datetime-local-input" class="form-control-label">Aplicar filtros</label>
-                  <button type="button" class="btn btn-primary col-12" @click.prevent="searchSubmit()">Buscar</button>
-                </div>
-
-                 
-              </div>
             </div>
 
 
@@ -97,6 +75,7 @@
                   <th scope="col">Fecha de registro</th>
                   <th scope="col"></th>
                   <th scope="col"></th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -105,22 +84,22 @@
                     <div class="media align-items-center">
                       <a href="#" class="avatar rounded-circle mr-3">
                         <img alt="Image placeholder"
-                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.email">
+                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.username">
                       </a>
                       <div class="media-body">
-                        <span class="mb-0 text-sm">{{item.email}}</span>
+                        <span class="mb-0 text-sm">{{ item.username }}</span>
                       </div>
                     </div>
                   </th>
                   <td>
-                    {{item.balance}}
+                    {{ item.balance }}
                   </td>
                   <td>
                     <button class="btn btn-primary btn-sm" @click="editBalanceModal(item)">+ / -</button>
                     <!-- <button class="btn btn-outline-primary btn-sm">-</button> -->
                   </td>
                   <td>
-                    {{item.createdAt}}
+                    {{ item.createdAt }}
                   </td>
                   <td>
                     <a :href="'/jugadores/' + item._id" class="btn btn-primary btn-sm">Ver / Editar perfil</a>
@@ -221,23 +200,29 @@
 
                 <div class="form-group col-12">
                   <label class="form-control-label">Balance</label>
-                  <input type="number" class="form-control form-control-alternative" v-model="forms.user.balance"
-                    min="0" />
+                  <el-input-number v-model="forms.user.balance" :min="0" :max="15000" controls-position="right"
+                    size="large" style="width:100%;" />
                 </div>
 
 
-                <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-bottom:20px">
-                  <label class="btn btn-secondary" v-bind:class="{ type_product_select: forms.user.isAgent == false }"
-                    @click="forms.user.isAgent  = false">
-                    <input type="radio" name="options" id="sedan" autocomplete="off" />
-                    Jugador
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ type_product_select: forms.user.isAgent == true }"
-                    @click="forms.user.isAgent  = true">
-                    <input type="radio" name="options" id="suv" autocomplete="off" />
-                    Agente
-                  </label>
+
+
+                <div class="form-group col-12">
+                  <label class="form-control-label" style="display:block">Tipo de usuario</label>
+                  <el-radio-group v-model="forms.user.isAgent">
+                    <el-radio :label="true" size="large" border>Agente</el-radio>
+                    <el-radio :label="false" size="large" border>Jugador</el-radio>
+                  </el-radio-group>
                 </div>
+
+                <div class="form-group col-12" v-if="forms.user.isAgent == false">
+                  <label class="form-control-label" style="display:block">Selecciona un agente</label>
+                  <el-select v-model="forms.user.agent_id" placeholder="Selecciona un agente" style="width: 100%"
+                    filterable>
+                    <el-option v-for="item in agents" :key="item" :label="item.username" :value="item._id" />
+                  </el-select>
+                </div>
+
 
 
               </form>
@@ -304,43 +289,34 @@
                   <input type="text" class="form-control form-control-alternative" v-model="forms.user.profile.about" />
                 </div>
 
+
+
               </form>
 
             </el-tab-pane>
 
 
             <el-tab-pane label="Marcas" name="Marcas">
-              <div class="form-group col-12"> 
-                  <div class="form-froup">
-                    <Toggle v-model="forms.user.enabledAllBrands" /> Todas las marcas de juegos disponibles
-                  </div>
-
-                  <div class="form-groupd" v-if="!forms.user.enabledAllBrands" style="margin-top:20px;">
-                    <el-select
-              multiple
-              v-model="forms.user.brands"
-              placeholder="Selecciona las marcas disponibles"
-              style="width: 100%"
-
-              filterable
-            >
-              <el-option
-                v-for="item in brands"
-                :key="item"
-                :label="item"
-                :value="item"
-              />
-            </el-select>
-                  </div>
+              <div class="form-group col-12">
+                <div class="form-froup">
+                  <Toggle v-model="forms.user.enabledAllBrands" /> Todas las marcas de juegos disponibles
                 </div>
+
+                <div class="form-groupd" v-if="!forms.user.enabledAllBrands" style="margin-top:20px;">
+                  <el-select multiple v-model="forms.user.brands" placeholder="Selecciona las marcas disponibles"
+                    style="width: 100%" filterable>
+                    <el-option v-for="item in brands" :key="item" :label="item.internal" :value="item.name" />
+                  </el-select>
+                </div>
+              </div>
 
             </el-tab-pane>
 
             <el-tab-pane label="Juegos" name="Juegos">
-              <div class="form-group col-12"> 
-                  <div class="form-froup">
-                    <Toggle v-model="forms.user.enabledAllGames" disabled  /> Todos los juegos disponibles
-                  </div>
+              <div class="form-group col-12">
+                <div class="form-froup">
+                  <Toggle v-model="forms.user.enabledAllGames" disabled /> Todos los juegos disponibles
+                </div>
               </div>
 
 
@@ -386,7 +362,7 @@
               </form>
             </el-tab-pane>
           </el-tabs>
- 
+
 
         </div>
         <div class="modal-footer">
@@ -400,8 +376,8 @@
 
 
 
-  
-   
+
+
   <!-- Modal -->
   <div class="modal fade" id="editBalance" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -418,46 +394,50 @@
 
 
           <table class="table align-items-center table-flush">
-              <thead class="thead-light">
-                <tr>
-                  <th scope="col">Detalles</th>
-                  <th scope="col">Balance</th> 
-                  <th scope="col" v-if="editBalance.balance !== 0"><b>Nuevo balance</b></th> 
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">
-                    <div class="media align-items-center">
-                      <a href="#" class="avatar rounded-circle mr-3">
-                        <img alt="Image placeholder"
-                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + editBalance.user.email">
-                      </a>
-                      <div class="media-body">
-                        <span class="mb-0 text-sm">{{editBalance.user.email}}</span>
-                      </div>
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Detalles</th>
+                <th scope="col">Balance</th>
+                <!-- <th scope="col" v-if="editBalance.balance !== 0"><b>Nuevo balance</b></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <a href="#" class="avatar rounded-circle mr-3">
+                      <img alt="Image placeholder"
+                        :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + editBalance.user.username">
+                    </a>
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{ editBalance.user.username }}</span>
                     </div>
-                  </th>
-                  <td>
-                    {{editBalance.user.balance}}
-                    
-                    <span class="text-success" v-if="editBalance.type == 'add'">+ {{editBalance.balance}}</span>
+                  </div>
+                </th>
+                <td>
+                  {{ editBalance.user.balance }}
 
-                    <span class="text-danger" v-if="editBalance.type == 'subtract'">- {{editBalance.balance}}</span>
+                  <span class="text-success" v-if="editBalance.type == 'add'">+ {{ editBalance.balance }}</span>
 
-                  </td> 
+                  <span class="text-danger" v-if="editBalance.type == 'subtract'">- {{ editBalance.balance }}</span>
 
-                  <td v-if="editBalance.balance !== 0"> 
-                    <span class="text-info" v-if="editBalance.type == 'add'">{{parseFloat(editBalance.balance) + parseFloat(editBalance.user.balance)}}</span> 
-                    <span class="text-info" v-if="editBalance.type == 'subtract'">{{parseFloat(editBalance.user.balance ) - parseFloat(editBalance.balance)}}</span>
+                </td>
 
-                  </td>
-                 
-                    
-                 
-                </tr>
-              </tbody>
-            </table>
+                <!-- <td v-if="editBalance.balance !== 0">
+                  <span class="text-info" v-if="editBalance.type == 'add'">{{ parseFloat(editBalance.balance) +
+                      parseFloat(editBalance.user.balance)
+                  }}</span>
+                  <span class="text-info" v-if="editBalance.type == 'subtract'">{{ parseFloat(editBalance.user.balance)
+                      - parseFloat(editBalance.balance)
+                  }}</span>
+
+                </td> -->
+
+
+
+              </tr>
+            </tbody>
+          </table>
 
 
 
@@ -465,8 +445,8 @@
           <div class="col-12">
             <label class="form-control-label" style="display:block">Tipo de operacion</label>
             <el-radio-group v-model="editBalance.type">
-             <el-radio label="add" size="large" border>Agregar</el-radio>
-             <el-radio label="subtract" size="large" border>Restar</el-radio>
+              <el-radio label="add" size="large" border>Agregar</el-radio>
+              <el-radio label="subtract" size="large" border>Restar</el-radio>
             </el-radio-group>
           </div>
 
@@ -474,34 +454,27 @@
           <div class="col-12">
             <label class="form-control-label" style="display:block">Monto</label>
             <el-radio-group v-model="editBalance.balance">
-             <el-radio label="50" size="large" border>50</el-radio>
-             <el-radio label="100" size="large" border>100</el-radio>
-             <el-radio label="150" size="large" border>150</el-radio>
-             <el-radio label="250" size="large" border>250</el-radio>
-             <el-radio label="350" size="large" border>350</el-radio>
-             <el-radio label="450" size="large" border>450</el-radio>
-             <el-radio label="1000" size="large" border>1000</el-radio>
+              <el-radio label="50" size="large" border>50</el-radio>
+              <el-radio label="100" size="large" border>100</el-radio>
+              <el-radio label="150" size="large" border>150</el-radio>
+              <el-radio label="250" size="large" border>250</el-radio>
+              <el-radio label="350" size="large" border>350</el-radio>
+              <el-radio label="450" size="large" border>450</el-radio>
+              <el-radio label="1000" size="large" border>1000</el-radio>
             </el-radio-group>
           </div>
 
 
- <el-divider border-style="dashed" />
+          <el-divider border-style="dashed" />
 
           <div class="col-12">
             <label class="form-control-label" style="display:block">O puedes ingresar un monto</label>
-            <el-input-number
-    v-model="editBalance.balance"
-    :min="1"
-    :max="15000"
-    controls-position="right"
-    size="large"
-    @change="handleChange"
-    style="width:100%;"
-  />
+            <el-input-number v-model="editBalance.balance" :min="1" :max="15000" controls-position="right" size="large"
+              @change="handleChange" style="width:100%;" />
           </div>
 
 
- 
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -524,13 +497,14 @@ import sdk from '@/sdk/bundle.js';
 export default {
   data() {
     return {
-      search : {
-        date : '',
-        target : '',
-        type : '',
+      search: {
+        user: '',
+        date: '',
+        target: '',
+        type: '',
       },
 
-      activeTabNewForm : 'Usuario',
+      activeTabNewForm: 'Usuario',
       pagination: {
         users: 0,
         brands: 0,
@@ -538,13 +512,14 @@ export default {
       loading: {
         users: true,
       },
-      editBalance : {
-        type : 'add',
-        balance : 0,
-        user : {}
+      editBalance: {
+        type: 'add',
+        balance: 0,
+        user: {}
       },
       users: [],
-      brands : [],
+      brands: [],
+      agents: [],
       forms: {
         user: {
           email: '',
@@ -554,10 +529,10 @@ export default {
           balance: 0,
           isAgent: false,
           automatically_settle: false,
-          enabledAllBrands : true,
-          brands : [],
-          enabledAllGames : true,
-          games : [],
+          enabledAllBrands: true,
+          brands: [],
+          enabledAllGames: true,
+          games: [],
           agent_data: {
             firstname: '',
             lastname: '',
@@ -580,10 +555,22 @@ export default {
   created() {
     this.loadUsers();
     this.loadBrands();
+
+    this.loadAgents();
+
+
+
+
   },
   methods: {
     searchSubmit() {
       console.log(this.search)
+    },
+
+    loadAgents() {
+      sdk.users.getAllAgents(this.pagination.users).then(data => {
+        this.agents = data;
+      })
     },
 
     loadUsers() {
@@ -594,9 +581,9 @@ export default {
     },
 
     loadBrands() {
-        sdk.brands.getAll(this.pagination.brands).then(data => {
-              this.brands = data;
-        })
+      sdk.brands.getAll(this.pagination.brands).then(data => {
+        this.brands = data;
+      })
     },
     saveUser() {
       sdk.users.create(this.forms.user).then(data => {
@@ -621,58 +608,56 @@ export default {
       })
     },
     saveBalance() {
-      console.log(this.editBalance);
+      if (this.editBalance.type == "add") {
+        sdk.users.balanceAdd(true, this.editBalance.user._id, this.editBalance.balance).then(data => {
+          if (data.error) {
+            return this.$toast.show(
+              data.message,
+              {
+                position: "bottom-right"
+              }
+            )
+          }
 
-      if(this.editBalance.type == "add" ) {
-        sdk.users.balanceAdd(true,this.editBalance.user._id,this.editBalance.balance).then(data => {
-        if (data.error) {
-          return this.$toast.show(
-            data.message,
+          this.$toast.success(
+            "El usuario fue editado correctamente",
             {
               position: "bottom-right"
             }
           )
-        }
 
-        this.$toast.success(
-          "El usuario fue editado correctamente",
-          {
-            position: "bottom-right"
-          }
-        )
-
-        $('#editBalance').modal('hide')
-        this.loadUsers();
-      })
+          $('#editBalance').modal('hide')
+          this.loadUsers();
+        })
       }
 
 
-      if(this.editBalance.type == "subtract" ) {
-        sdk.users.balanceSubtract(true,this.editBalance.user._id,this.editBalance.balance).then(data => {
-        if (data.error) {
-          return this.$toast.show(
-            data.message,
+      if (this.editBalance.type == "subtract") {
+        sdk.users.balanceSubtract(true, this.editBalance.user._id, this.editBalance.balance).then(data => {
+          if (data.error) {
+            return this.$toast.show(
+              data.message,
+              {
+                position: "bottom-right"
+              }
+            )
+          }
+
+          this.$toast.success(
+            "El usuario fue editado correctamente",
             {
               position: "bottom-right"
             }
           )
-        }
 
-        this.$toast.success(
-          "El usuario fue editado correctamente",
-          {
-            position: "bottom-right"
-          }
-        )
-
-        $('#editBalance').modal('hide')
-        this.loadUsers();
-      })
+          $('#editBalance').modal('hide')
+          this.loadUsers();
+        })
       }
-       
+
     },
 
-     
+
 
     newUserModal() {
       $('#newUser').modal('show')

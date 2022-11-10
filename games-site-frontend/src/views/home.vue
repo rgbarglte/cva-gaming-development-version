@@ -13,7 +13,12 @@
                     </div>
                 </div>
                 <div class="col-md-10">
-                    <div class="col-md-12" style="padding:4rem !important">
+
+                    <gridGames :games="games" />
+
+
+                    <!-- <div class="col-md-12" style="padding:4rem !important">
+                        
 
 
                         <div class="row" v-if="loading.games == true">
@@ -51,7 +56,7 @@
                             </div>
 
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -79,11 +84,14 @@ import typesComponent from '@/components/types.vue';
 import brandsComponent from '@/components/brands.vue';
 import carrouselComponent from '@/components/carrousel.vue';
 
+import gridGames from '@/components/grid-games.vue';
+
 export default {
     components: {
         typesComponent,
         brandsComponent,
-        carrouselComponent
+        carrouselComponent,
+        gridGames
     },
     data() {
         return {

@@ -9,6 +9,11 @@ import { v4 as uuidv4 } from "uuid";
 
 import history from "./history.js";
 import activity from "./activity.js";
+import agents from "./users/agents.js"; 
+import Games from "./users/games.js"; 
+
+import HistoryGames from "./users/historyGames.js"; 
+import lodash from "lodash";
 
 const query = async (
   filters = {},
@@ -102,7 +107,6 @@ const create = async (data) => {
 };
 
 const createBack = async (data) => {
-  console.log("librarie users", data);
   return new Promise((resolve, reject) => {
     var passwordConstant = generator.generate({
       length: 12,
@@ -112,40 +116,54 @@ const createBack = async (data) => {
     users
       .createPlayer(data.username, passwordConstant, data.nickname, "EUR")
       .then(async (dataInternal) => {
-        console.log("createplater", dataInternal);
         if (dataInternal.error == 1) {
-          reject(dataInternal);
+          return reject(dataInternal);
         }
-        const authTokenSettings = {
-          time: Date(),
-          email: data.email,
-          username: data.username,
-        };
 
-        var serial = {
-          isLogin: false,
-          email: data.email,
-          username: data.username,
-          password: data.password,
-          nickname: data.password,
-          passwordConstant: passwordConstant,
-          authToken: sign(authTokenSettings, settings.jwtSecret),
-          profile: data.profile,
-          agent: data.agent,
-          automatically_settle: data.automatically_settle,
-          agent_data: data.agent_data,
-          internal: dataInternal.response,
-        };
-        console.log("serial", serial);
-        const temp = new model(serial);
-        console.log("model", temp);
-        try {
-          const save = await temp.save();
-          console.log("insert", save);
-          resolve(save);
-        } catch (err) {
-          reject(err);
-        }
+        verify(data.auth, settings.jwtSecret, async function (err, decoded) {
+          if (err) {
+            return resolve({ error: 1, msg: "Token no valid" });
+          }
+          const authTokenSettings = {
+            time: Date(),
+            email: data.email,
+            username: data.username,
+          };
+
+          var serial = {
+            isLogin: false,
+            email: data.email,
+            username: data.username,
+            password: data.password,
+            nickname: data.password,
+            passwordConstant: passwordConstant,
+            authToken: sign(authTokenSettings, settings.jwtSecret),
+            profile: data.profile,
+
+            isAgent: data.isAgent,
+            enabledAllBrands: data.enabledAllBrands,
+            brands: data.brands,
+            enabledAllGames: data.enabledAllGames,
+            games: data.games,
+            socket : uuidv4(),
+            automatically_settle: data.automatically_settle,
+            agent_data: data.agent_data,
+            owner_id: decoded._id,
+            agent_id: data.agent_id,
+            internal: dataInternal.response,
+          };
+          const temp = new model(serial);
+
+          return resolve(await temp.save());
+
+          // try {
+          //   const save = await temp.save();
+          //   console.log("insert", save);
+          //   resolve(save);
+          // } catch (err) {
+          //   reject(err);
+          // }
+        });
       });
   });
 };
@@ -168,6 +186,8 @@ const login = async (data, req = null) => {
         email: tmp[0].email,
         username: tmp[0].username,
         _id: tmp[0]._id,
+        owner_id: tmp[0].owner_id,
+        agent_id: tmp[0].agent_id,
         socket: socket,
       };
 
@@ -188,7 +208,7 @@ const login = async (data, req = null) => {
           const tmpUpdate = await model.findById(tmp[0]._id).exec();
           tmpUpdate.authToken = sign(authTokenSettings, settings.jwtSecret);
           tmpUpdate.internal = dataLogin.response;
-          tmpUpdate.balance = dataLogin.response.balance;
+          // tmpUpdate.balance = dataLogin.response.balance; //fix 0 balance
           tmpUpdate.socket = socket;
           console.log("login tmpUpdate", tmpUpdate);
           return resolve(await tmpUpdate.save());
@@ -198,16 +218,18 @@ const login = async (data, req = null) => {
 };
 
 const loginAdmin = async (data, req = null) => {
-console.log("🚀 ~ file: users.js ~ line 201 ~ loginAdmin ~ data", data)
+  console.log("🚀 ~ file: users.js ~ line 201 ~ loginAdmin ~ data", data);
 
-  
   return new Promise((resolve, reject) => {
     query({
       email: data.email,
       password: data.password,
       isAdmin: true,
     }).then(async (tmp) => {
-      console.log("🚀 ~ file: users.js ~ line 210 ~ returnnewPromise ~ tmp", tmp)
+      console.log(
+        "🚀 ~ file: users.js ~ line 210 ~ returnnewPromise ~ tmp",
+        tmp
+      );
       if (tmp.length == 0) {
         return resolve({
           error: true,
@@ -222,18 +244,20 @@ console.log("🚀 ~ file: users.js ~ line 201 ~ loginAdmin ~ data", data)
         _id: tmp[0]._id,
         socket: socket,
       };
-      console.log("🚀 ~ file: users.js ~ line 225 ~ returnnewPromise ~ authTokenSettings", authTokenSettings)
-
-      
- 
+      console.log(
+        "🚀 ~ file: users.js ~ line 225 ~ returnnewPromise ~ authTokenSettings",
+        authTokenSettings
+      );
 
       const tmpUpdate = await model.findById(tmp[0]._id).exec();
-      console.log("🚀 ~ file: users.js ~ line 228 ~ returnnewPromise ~ tmpUpdate", tmpUpdate)
-      
+      console.log(
+        "🚀 ~ file: users.js ~ line 228 ~ returnnewPromise ~ tmpUpdate",
+        tmpUpdate
+      );
+
       tmpUpdate.authToken = sign(authTokenSettings, settings.jwtSecret);
       tmpUpdate.socket = socket;
       tmpUpdate.passwordConstant = tmpUpdate.password;
-
 
       return resolve(await tmpUpdate.save());
     });
@@ -354,6 +378,26 @@ const getAllBySlugCollection = async (slug, pagination) => {
     return err;
   }
 };
+
+const getAllAgents = async (pageNumber = 1) => {
+  var pageSize = 50;
+  var limit = pageSize;
+  var skip = pageSize * pageNumber;
+
+  const tmp = await query(
+    {
+      isAgent: true,
+    },
+    {},
+    15000
+  );
+  try {
+    return tmp;
+  } catch (err) {
+    return err;
+  }
+};
+
 /* 
    get the latest products created
   */
@@ -496,7 +540,56 @@ const balanceSubtract = (owner, userTarget, balance, req) => {
   });
 };
 
+const getAllAgentsDetails = (date) => {
+  console.log("getAllAgentsDetails", date);
+  return new Promise(async (resolve, reject) => {
+    agents.getAgentsDetailByData(date[0], date[1]).then(data => {
+       return resolve(data);
+    })
+  })
+};
+
+
+
+
+const getAllUsersDetailsByAgent = (agent,date) => {
+  console.log("getAllUsersDetailsByAgent", agent,date);
+  return new Promise(async (resolve, reject) => {
+    agents.getAllUsersDetailsByAgent(agent,date[0], date[1]).then(data => {
+       return resolve(data);
+    })
+  })
+};
+
+
+
+const getAllHistoryGameByUser = (iduser,date) => {
+  console.log("getAllHistoryGameByUser", iduser,date);
+  return new Promise(async (resolve, reject) => {
+    HistoryGames.getAllHistoryGameByUser(iduser,date[0], date[1]).then(data => {
+       return resolve(data);
+    })
+  })
+};
+
+const getBestPlayers = (date) => { 
+  return new Promise(async (resolve, reject) => {
+    Games.getBestPlayers(date[0], date[1]).then(data => {
+       return resolve(data);
+    })
+  })
+};
+
+ 
+
+
+
+
 export default {
+  getBestPlayers : getBestPlayers,
+  getAllHistoryGameByUser : getAllHistoryGameByUser,
+  getAllUsersDetailsByAgent : getAllUsersDetailsByAgent,
+  getAllAgentsDetails: getAllAgentsDetails,
   balanceSubtract: balanceSubtract,
   balanceAdd: balanceAdd,
   searchText: searchText,
@@ -511,6 +604,7 @@ export default {
   getAllByIdCollection: getAllByIdCollection,
   getAllBySlugCollection: getAllBySlugCollection,
   getAllLast: getAllLast,
+  getAllAgents: getAllAgents,
   getAllFeatured: getAllFeatured,
   search: search,
   getAllByIdBrand: getAllByIdBrand,

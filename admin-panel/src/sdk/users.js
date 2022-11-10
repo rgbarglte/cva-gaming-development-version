@@ -13,6 +13,38 @@ export default {
         });
     });
   },
+   
+  getAllAgents: (page = 1) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/get/all/agents", {
+          page : page
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  getAllDetailUsersByAgent: (params) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/agents/detail/users",params)
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
+  getAllAgentsDetail: (params) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/agents/detail",params)
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
 
   getAll: (page = 1) => {
     return new Promise((resolve, reject) => {
@@ -113,5 +145,28 @@ export default {
         });
     });
   },
+
+
+  getAllHistoryGames: (params) => { 
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/games/history", params)
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
+
+  gestPlayers: (params) => { 
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/best/games", params)
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
 
 };

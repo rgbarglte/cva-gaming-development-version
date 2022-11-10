@@ -86,6 +86,7 @@
                    <th scope="col">Balance antiguo</th>
                    <th scope="col">Balance resultante</th>
                    <th scope="col">Fecha</th>
+                   <th scope="col"></th>
                    <!-- <th scope="col">Completion</th>
                    <th scope="col"></th> -->
                  </tr>
@@ -136,6 +137,10 @@
                      <td>
                       {{item.createdAt}}
                      </td>
+
+                     <td>
+                    <a :href="'/jugadores/' + item.user._id" class="btn btn-primary btn-sm">Ver / Editar perfil</a>
+                  </td>
 
                    <!-- <td>
                      <div class="d-flex align-items-center">

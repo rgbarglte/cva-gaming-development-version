@@ -163,9 +163,14 @@
                 </div>
               </form>
             </div>
-          </div>
-        </div>
+          </div>  
+        </div> 
       </div>
+
+      <usersActivityBalance  style="margin-top:50px;margin-bottom:50px" :user="$route.params.id" />
+
+
+      <usersHistoryWidget  style="margin-top:50px;margin-bottom:50px" :user="$route.params.id" />
       <!-- Footer -->
       <footer class="footer">
         <div class="row align-items-center justify-content-xl-between">
@@ -204,7 +209,14 @@ import sdk from '@/sdk/bundle.js';
 import { ElNotification } from 'element-plus'
 
 
+import usersHistoryWidget from '@/components/game-history-user-widget.vue';
+import usersActivityBalance from '@/components/activity-balance-user-widget.vue';
+ 
 export default {
+  components : {
+    usersHistoryWidget,
+    usersActivityBalance
+  },
   data() {
     return {
       login: {

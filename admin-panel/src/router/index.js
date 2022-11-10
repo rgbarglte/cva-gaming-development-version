@@ -125,6 +125,17 @@ const router = createRouter({
         meta: {
             layout: true,
         },
+    },
+
+
+    {
+        path: "/agentes/:id",
+        name: "",
+        component: () =>
+            import ("../views/agentes-detalles.vue"),
+        meta: {
+            layout: true,
+        },
     }
 
 

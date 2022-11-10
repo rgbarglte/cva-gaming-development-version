@@ -18,6 +18,23 @@ export default {
   },
 
 
+  getAllBalanceByUser: (user,page = 0 , dateFilter = {}) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("activity/balance/user", {
+          page: page,
+          user : user,
+          filter : {
+            date : dateFilter.date, 
+          }
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+
+
   balanceTotalPages: () => {
     return new Promise((resolve, reject) => {
       client

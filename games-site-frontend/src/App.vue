@@ -17,7 +17,7 @@
 
         <div class="col-md-6" style="padding:4rem">
           <div class="row">
-            <div class="col-4" style="padding-top:30px;padding-bottom: 30px;">
+            <div class="col-12 col-md-4" style="padding-top:30px;padding-bottom: 30px;">
               <a class="col-12" style="     height: 150px;
     background: rgb(19, 30, 44);
     width: 100%;
@@ -28,7 +28,7 @@
   animation-duration: 4s;"></a>
             </div>
 
-            <div class="col-8"
+            <div class="col-12 col-md-8"
               style="padding-top:30px;padding-bottom: 30px;font-size:12px;color:white;font-weight: 350;">
               Irure fugiat adipisicing pariatur elit qui esse est Lorem exercitation anim elit adipisicing tempor. Duis
               adipisicing sint quis id. Anim sit occaecat voluptate exercitation officia ullamco mollit incididunt qui
@@ -38,15 +38,11 @@
               minim ex. Irure voluptate nulla occaecat et est incididunt exercitation ex minim.
             </div>
           </div>
-        </div>
-
-
-
-
+        </div> 
 
         <div class="col-md-6" style="padding:4rem">
           <div class="row">
-            <div class="col-4" style="padding-top:30px;padding-bottom: 30px;">
+            <div class="col-12 col-md-4" style="padding-top:30px;padding-bottom: 30px;">
               <a class="col-12" style="     height: 150px;
     background: rgb(19, 30, 44);
     width: 100%;
@@ -57,7 +53,7 @@
   animation-duration: 4s;"></a>
             </div>
 
-            <div class="col-8"
+            <div class="col-12 col-md-8"
               style="padding-top:30px;padding-bottom: 30px;font-size:12px;color:white;font-weight: 350;">
               Irure fugiat adipisicing pariatur elit qui esse est Lorem exercitation anim elit adipisicing tempor. Duis
               adipisicing sint quis id. Anim sit occaecat voluptate exercitation officia ullamco mollit incididunt qui
@@ -269,6 +265,19 @@ p {
 
 }
 
+@media (max-width: 600px) {
+  .section-top {
+  background: linear-gradient(183deg, #050c14, transparent);
+  height: 117px;
+  box-shadow: #005eff 0px 0px 150px;
+  border-top: 2px solid #0071ff;
+  /* border-bottom: 2px solid #0071ff; */
+
+}
+
+
+}
+
 .section-mid {
   height: auto;
   background: rgb(9 22 38);
@@ -282,6 +291,28 @@ p {
   top: 0px;
   /* border-right: 2px solid #0071ff; */
 }
+
+
+
+@media (max-width: 600px) { 
+  .section-mid-left {
+    background: linear-gradient(181deg, rgb(5 14 25), transparent);
+    height: auto;
+    position: relative;
+    padding-top: 0;
+    top: 0px;
+    /* border-right: 2px solid #0071ff; */
+    background: #040a12;
+    box-shadow: 0 0 40px black;
+}
+.section-mid-left > .col-12 {
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-top: 15px !important;
+  margin-bottom: 15px !important;
+}
+}
+
 
 .footer {
   background: #091626;
@@ -523,12 +554,12 @@ export default {
   },
   created() {
  
-    ElNotification({
-       title: 'Demo account',
-       message: "Email : pruebaregistermodal@gmail.com - Password : 123",
-       position: 'bottom-right',
-       duration: 0,
-    })
+    // ElNotification({
+    //    title: 'Demo account',
+    //    message: "Email : pruebaregistermodal@gmail.com - Password : 123",
+    //    position: 'bottom-right',
+    //    duration: 0,
+    // })
 
   },
   methods: {

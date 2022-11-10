@@ -11,7 +11,7 @@ export default {
       socket = io("https://cvagaming.com");
       socket.on("connect", () => {
         console.log("Successfully connected!");
-        socket.emit("teste", {
+        socket.emit("connect-dashboard-chat", {
           auth: auth,
         });
         resolve(socket);

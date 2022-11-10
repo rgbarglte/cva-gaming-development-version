@@ -1,11 +1,11 @@
 <template>
-    <div class="section-top">
+    <div class="section-top ">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2" style="padding-top:15px">
                     <input type="text" class="form-control" @click.prevent="openModal()"
                         style="height: 30px;border:none;font-size:12px;background:rgb(0,0,0,0.3) !important"
-                        placeholder="Buscar...." />
+                        placeholder="Search game...." />
                 </div>
                 <div class="col-md-10">
                     <el-scrollbar>
@@ -105,6 +105,29 @@
 
 
 
+<style scoped>
+@media (max-width: 600px) {
+    .hide-mobil {
+        display: none !important;
+    }
+
+    .show-mobil {
+        display: flex !important;
+        width: 100% !important;
+        height: auto !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 2000 !important;
+    }
+ 
+}
+
+.hide-desktop {
+    display: none;
+}
+</style>
 
 <script>
 import sdk from '@/assets/sdk/bundle.js';

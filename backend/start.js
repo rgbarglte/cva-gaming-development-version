@@ -3,6 +3,7 @@ import brands from "./routes/brands.js";
 import users from "./routes/users.js";
 import historyRouter from "./routes/history.js";
 import activity from "./routes/activity.js";
+import platform from "./routes/platform.js";
 import types from "./routes/types.js";
 import express from "express";
 
@@ -147,6 +148,7 @@ const start = () => {
   app.use(historyRouter.endpoint, historyRouter.router);
   app.use(activity.endpoint, activity.router);
   app.use(types.endpoint, types.router);
+  app.use(platform.endpoint, platform.router);
 
 
  
