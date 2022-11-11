@@ -1,5 +1,18 @@
 import mongoose from "mongoose";
 
+
+const profileSchema = new mongoose.Schema(
+  {
+    firstname: { type: String, required: false, default: null },
+    lastname: { type: String, required: false, default: null },
+    address: { type: String, required: false, default: null },
+    city: { type: String, required: false, default: null },
+    country: { type: String, required: false, default: null },
+    zip: { type: String, required: false, default: null },
+    about: { type: String, required: false, default: null },
+  }
+)
+
 export default mongoose.model(
   "users",
   new mongoose.Schema(
@@ -22,17 +35,9 @@ export default mongoose.model(
       internal: { type: Object, required: true },
       socket: { type: String, required: false },
       isLogin: { type: Boolean, required: false, default: false },
-      profile: {
-        firstname: { type: String, required: false, default: null },
-        lastname: { type: String, required: false, default: null },
-        address: { type: String, required: false, default: null },
-        city: { type: String, required: false, default: null },
-        country: { type: String, required: false, default: null },
-        zip: { type: String, required: false, default: null },
-        about: { type: String, required: false, default: null },
-      },
+      profile: profileSchema,
       automatically_settle: { type: Boolean, required: false, default: false },
-      owner_id: { type: String, required: true },
+      owner_id: { type: String, required: false, dafault : null },
       agent_id: { type: String, required: false, default: null },
       agent_data: { type: Object, required: false, default: {} },
       createDate: {

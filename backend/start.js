@@ -5,6 +5,12 @@ import historyRouter from "./routes/history.js";
 import activity from "./routes/activity.js";
 import platform from "./routes/platform.js";
 import types from "./routes/types.js";
+
+
+import GeneralChat from "./routes/general/chat.js";
+
+
+
 import express from "express";
 
 import cors from "cors";
@@ -149,7 +155,9 @@ const start = () => {
   app.use(activity.endpoint, activity.router);
   app.use(types.endpoint, types.router);
   app.use(platform.endpoint, platform.router);
-
+  
+  // General endpoints
+  app.use(GeneralChat.endpoint,GeneralChat.router);
 
  
 

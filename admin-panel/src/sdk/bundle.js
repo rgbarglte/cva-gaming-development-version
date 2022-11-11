@@ -9,6 +9,8 @@ import tools from './tools.js';
 
 import platform from './platform.js';
 
+import generalChat from './general/chat.js';
+
 export default {
     games : games,
     brands : brands,
@@ -18,5 +20,8 @@ export default {
     types  :types,
     socket  :socket,
     tools : tools,
-    platform : platform
+    platform : platform,
+    general : {
+        chat : generalChat
+    }
 }

@@ -111,14 +111,14 @@
 
 
           <li class="nav-item  "> 
-            <RouterLink class="nav-link" to="/juegos/categorias"> <i class="ni ni-tv-2 text-primary"></i> Categorias de juegos <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+            <RouterLink class="nav-link" to="/juegos/categorias"> <i class="ni ni-tv-2 text-primary"></i> Categorias de juegos</RouterLink> 
           </li>
 
 
 
 
           <li class="nav-item  "> 
-            <RouterLink class="nav-link" to="/juegos/marcas"> <i class="ni ni-tv-2 text-primary"></i> Marcas de juegos <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+            <RouterLink class="nav-link" to="/juegos/marcas"> <i class="ni ni-tv-2 text-primary"></i> Marcas de juegos</RouterLink> 
           </li>
 
 

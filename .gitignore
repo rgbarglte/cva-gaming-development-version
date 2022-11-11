@@ -7,3 +7,5 @@ admin-elements - copia (2)
 test/
 *.rar
 *.zip
+__pycache__
+__init__.py

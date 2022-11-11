@@ -97,10 +97,10 @@
                     <div class="media align-items-center">
                       <a href="#" class="avatar rounded-circle mr-3">
                         <img alt="Image placeholder"
-                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.user.email">
+                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.user.username">
                       </a>
                       <div class="media-body">
-                        <span class="mb-0 text-sm">{{item.user.email}}</span>
+                        <span class="mb-0 text-sm">{{item.user.username}}</span>
                       </div>
                     </div>
                   </th>

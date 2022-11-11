@@ -12,159 +12,30 @@
   <div class="container-fluid mt--7">
     <!-- Table -->
     <div class="row">
-      <div class="col">
+
+      
+
+
+
+
+
+
+
+
+
+      
+      <div class="col-12">
         <div class="card shadow">
           <div class="card-header border-0">
 
-            <h3 class="mb-0">Jugadores</h3>
+            <h3 class="mb-0">Bandeja de entrada</h3>
 
             <div class="row">
 
-              <div class="col-md-3" style="padding-top:20px">
+              <div class="col-md-4" style="padding-top:20px"> <treeUsers @change="changeUser" /></div>
+              <div class="col-md-8" style="padding-top:0;">
 
-                <table class="table align-items-center table-flush">
-
-                  <tbody>
-                    <tr v-for="(item, index) in users">
-
-                      
-
-
-                      <th scope="row"  @click="openChat(item)" style="background: rgb(243 245 251);cursor:pointer">
-                        <div class="media align-items-center">
-                          <a href="#" class="avatar rounded-circle mr-3">
-                            <img alt="Image placeholder"
-                              :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.email">
-                          </a>
-                          <div class="media-body">
-                            <span class="mb-0 text-sm">{{ item.email }}</span><br />
-                          </div>
-
-                        </div>
-                      </th>
-
-                    </tr>
-                  </tbody>
-                </table>
-
-              </div>
-              <div class="col-md-9" style="padding-top:0;">
-
-                <div class="col-12" style="height: calc(100vh - 200px);overflow:hidden;overflow-y:auto;"
-                  ref="containerChat">
-
-
-                  <div class="col-12" style="padding:0" v-for="item in chat.chats">
-                    <div v-if="item.remote == true" class="col-12"
-                      style="margin-top:20px;display:flex;margin-bottom: 50px;">
-                      <!-- <div class="" style="    display: flex;
-    width: 60px;
-    justify-content: center;
-    align-items: center;
-    align-content: center;">
-                      <img :src="'https://ui-avatars.com/api/?background=2dce89&color=fff&name=f4'"
-                        style="height:50px;border-radius:100%;margin-right:10px" />
-                    </div> -->
-
-                      <div class="" style=" 
-        display: flex;
-    width: auto;
-    text-align: left;
-    flex-direction: column; 
-     ">
-
-                        <b style="font-size: 13px;">Argon Design System</b>
-                        <div class="" style="   
-    display: flex;
-    width: auto;
-    background: rgb(243 245 251);
-    align-items: center;
-    padding: 15px 15px 15px 20px;
-    border-radius: 8px;
-    text-align: left;
-    margin-top: 10px;
-    /* border: 1px solid rgb(255 255 255); */
-    /* border: 1px solid rgb(140 66 66); */
-    font-size: 15px;
-    padding:15px
- ">
-                          {{ item.message }}
-
-
-                          <small style="font-size:11px;opacity:0.8;margin-left:20px;">20/06/2022</small>
-                        </div>
-                      </div>
-                    </div>
-
-
-
-
-                    <div v-if="item.remote == false" class="col-12"
-                      style="margin-top:20px;display:flex;margin-bottom: 50px;flex-direction: row-reverse;">
-                      <!-- <div class="" style="    display: flex;
-    width: 60px;
-    justify-content: center;
-    align-items: center;
-    align-content: center;">
-                      <img :src="'https://ui-avatars.com/api/?background=8965e0&color=fff&name=ra'"
-                        style="height:50px;border-radius:100%;margin-left:10px" />
-                    </div> -->
-
-                      <div class="" style=" 
-        display: flex;
-    width: auto;
-    text-align: left;
-    flex-direction: column; 
-     ">
-
-                        <b style="font-size: 13px;">Firstname lastname</b>
-                        <div class="" style="   
-    display: flex;
-    width: auto;
-    background: rgb(243 245 251);
-    align-items: center;
-    padding: 15px 15px 15px 20px;
-    border-radius: 8px;
-    text-align: left;
-    margin-top: 10px;
-    /* border: 1px solid rgb(255 255 255); */
-    /* border: 1px solid rgb(140 66 66); */
-    font-size: 15px;
-    padding:15px
- ">
-                          {{ item.message }}
-
-
-                          <small style="font-size:11px;opacity:0.8;margin-left:20px;">20/06/2022</small>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-
-
-
-
-
-
-
-                </div>
-
-                <div class="col-12" style="margin-top:20px;display:flex">
-
-                  <div class="" style="display:flex;width:60px;">
-                    <img :src="'https://ui-avatars.com/api/?background=8965e0&color=fff&name=raa'"
-                      style="height:50px;border-radius:100%;margin-right:10px" />
-                  </div>
-                  <form @submit.prevent="sendChat()" style="display:flex;width:100%;">
-                    <input type="text" class="form-control" placeholder="Escribe un mensaje.."
-                      style="border-radius: 30px;border: 1px solid rgb(199, 199, 199) !important;background: rgb(251 251 251) !important;"
-                      v-model="chat.message" />
-                    <button type="submit" style="display:none"></button>
-                  </form>
-                </div>
-
-
+               <listMessages  :users="usersSelected" v-if="listMessagesShow" />
 
               </div>
             </div>
@@ -186,15 +57,23 @@
 
 <script>
 import sdk from '@/sdk/bundle.js';
-
+import treeUsers from '@/components/general/chat/agents.vue'
+import listMessages from '@/components/general/chat/chat.vue'
 export default {
+  components: {
+    treeUsers,
+    listMessages
+  },
   data() {
     return {
+      listMessagesShow : false,
+      usersSelected : [],
       users: [],
       search: {
         date: '',
         target: '',
         type: '',
+        user: '',
       },
       chat: {
         target: null,
@@ -251,23 +130,30 @@ export default {
   },
   created() {
     sdk.socket.connect(localStorage.getItem('auth')).then(socket => {
-      socket.on('balance', (response) => {
-        this.loginData.balance = response.balance;
-      })
+      
       socket.on('chat-message-client', (response) => {
         console.log('chat', response)
         response.remote = true;
         response.message = response.msg;
         this.chat.chats.push(response)
       })
-    });  
+    });
     this.loadUsers();
   },
   methods: {
+    changeUser(data) {
+      this.listMessagesShow = false;
+      setTimeout(() => {
+        this.usersSelected = data.target 
+      console.log('chat view',this.usersSelected) 
+      this.listMessagesShow = true; 
+      },500)
+    },
     openChat(item) {
       this.chat.target = item._id;
       this.chat.data = item;
-    }, 
+      this.loadChats(item._id)
+    },
     sendChat() {
       this.chat.chats.push({
         message: this.chat.message,
@@ -292,7 +178,7 @@ export default {
         this.users = data;
         this.loading.users = false;
       })
-    } 
+    }
   },
 };
 
