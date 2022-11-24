@@ -86,7 +86,7 @@ text-transform:uppercase;
                 <li class="nav-item active" v-if="!login">
                     <a class="nav-link" href="#" @click.prevent="openModal()" v-if="login == false">Ingresar</a>
                 </li>
-              
+
 
             </ul>
 
@@ -256,7 +256,7 @@ text-transform:uppercase;
                         Gracias por iniciar sesion.
                     </div>
                     <div class="form-group">
-                        <label>E-Mail</label>
+                        <label>Nombre de usuario</label>
                         <input type="text" class="form-control" v-model="temp.login.email"
                             placeholder="Direccion de e-mail" :disabled="temp.login.disabled" />
                     </div>
@@ -351,7 +351,7 @@ text-transform:uppercase;
     margin: 15px;
     border-radius: 30px; z-index: 1000;" @click.prevent="temp.chat.content = true">Chat</button>
 
-     
+
     <wdigetChat v-if="login" />
 </template>
 
@@ -372,10 +372,10 @@ text-transform:uppercase;
         z-index: 1000 !important;
     }
 
-    .navbar-collapse { 
-    padding-bottom: 30px !important;
-    background: linear-gradient(359deg, rgb(5, 12, 20), transparent) !important;
-}
+    .navbar-collapse {
+        padding-bottom: 30px !important;
+        background: linear-gradient(359deg, rgb(5, 12, 20), transparent) !important;
+    }
 
     .navbar-dark .navbar-nav .active>.nav-link,
     .navbar-dark .navbar-nav .nav-link.active,

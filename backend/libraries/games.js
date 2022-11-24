@@ -2,14 +2,16 @@ import model from "./../models/games.js";
 import games from "./../libraries/SDK/games/games.js";
 import users from "./users.js";
 import usersModel from "./../models/users.js";
+import historyModel from "./../models/history.js";
 
 import history from "./history.js";
 import socket from "../services/socket.js";
 
-
 import brands from "../libraries/brands.js";
 import lodash from "lodash";
+import { shaValidation } from "./SDK/games/tools.js";
 
+var rollbackSucess = [];
 
 const create = async (data) => {
   const temp = new model(data);
@@ -101,29 +103,26 @@ const getEmbed = async (auth = null, id) => {
         }
         // console.log('NO ERROR')
 
-        if(lodash.isEmpty(data)) {
+        if (lodash.isEmpty(data)) {
           await games.getGame(tmp[0].internal.id).then((data) => {
             return resolve(data);
           });
           // console.log('ERROR')
-          return; 
+          return;
         } else {
           await games
-          .getGame(
-            tmp[0].internal.id,
-            null,
-            "EUR",
-            0,
-            data[0].username,
-            data[0].passwordConstant
-          )
-          .then((data) => {
-            return resolve(data);
-          });
-
+            .getGame(
+              tmp[0].internal.id,
+              null,
+              "EUR",
+              0,
+              data[0].username,
+              data[0].passwordConstant
+            )
+            .then((data) => {
+              return resolve(data);
+            });
         }
-
-         
       });
     } catch (err) {
       return err;
@@ -284,18 +283,17 @@ const getAllByIdBrand = async (id, pageNumber = 1) => {
 };
 /* 
    get all the products of a brand using its slug
-  */ 
+  */
 const getAllBySlugBrand = async (slug, pageNumber = 1) => {
   var pageSize = 50;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
   return new Promise((resolve, reject) => {
-  brands.query({slug:slug}).then(async (data) => {
+    brands.query({ slug: slug }).then(async (data) => {
+      if (lodash.isEmpty(data)) {
+        return resolve([]);
+      }
 
-    if(lodash.isEmpty( data )) {
-      return resolve([]);
-    }
-     
       const tmp = await query(
         {
           "internal.category": data[0].internal,
@@ -304,16 +302,99 @@ const getAllBySlugBrand = async (slug, pageNumber = 1) => {
         limit,
         {},
         skip
-      ); 
-      resolve(tmp)
-  })
-})
+      );
+      resolve(tmp);
+    });
+  });
+};
+
+const rollbackCallback = async (req = null) => {
+  const tmp = await history.query(
+    {
+      "data.transaction_id": req.transaction_id,
+    },
+    {},
+    3
+  );
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (tmp.length == 0) {
+        return resolve({ status: "404", msg: "TRANSACTION_NOT_FOUND" });
+      }
+      var result, balancePrev, BalanceUpdate;
+
+      BalanceUpdate = await usersModel.findById(tmp[0].userid).exec();
+      balancePrev = parseFloat(BalanceUpdate.balance);
+
+      if (tmp[0].data.action == "debit") {
+        BalanceUpdate.balance =
+          parseFloat(BalanceUpdate.balance) + parseFloat(tmp[0].data.amount);
+
+        result =
+          parseFloat(BalanceUpdate.balance) + parseFloat(tmp[0].data.amount);
+
+        await BalanceUpdate.save();
+      }
+      if (tmp[0].data.action == "credit") {
+        const tmp2 = await history.query(
+          {
+            "data.transaction_id": req.transaction_id,
+            "data.round_id": req.round_id,
+            "data.action": 'rollback'
+          },
+          {},
+          1,
+          {_id : -1}
+        );
+
+        if (tmp2.length == 0) { 
+          BalanceUpdate.balance =
+            parseFloat(BalanceUpdate.balance) - parseFloat(tmp[0].data.amount);
+
+          result =
+            parseFloat(BalanceUpdate.balance) - parseFloat(tmp[0].data.amount);
+
+          // await BalanceUpdate.save();
+        } 
+        else {
+          // BalanceUpdate.balance = parseFloat(BalanceUpdate.balance)
+          result = parseFloat(BalanceUpdate.balance)
+        }
+
+         
+
+        await BalanceUpdate.save();
+          
+      }
+
+      if (req) {
+        req.rollback = {
+          balance: balancePrev,
+          amount: tmp[0].data.amount,
+          success: true,
+          success_balance: result,
+        };
+        history.crateGame(BalanceUpdate._id, req, {
+          email: BalanceUpdate.email,
+          username: BalanceUpdate.username,
+        });
+      }
+
+      return resolve({
+        status: "200",
+        balance: result,
+      });
+    } catch (err) {
+      return reject({ status: "500", msg: "internal error", err: err });
+    }
+  });
 };
 
 const getBalanceCallback = async (username, sessionId, req = null) => {
   const tmp = await users.query({
     username: username,
-    "internal.sessionid": sessionId,
+    // "internal.sessionid": sessionId,
   });
   return new Promise((resolve, reject) => {
     try {
@@ -322,6 +403,9 @@ const getBalanceCallback = async (username, sessionId, req = null) => {
       }
 
       if (req) {
+        req.rollback = {
+          balance: tmp[0].balance,
+        };
         history.crateGame(tmp[0]._id, req, {
           email: tmp[0].email,
           username: tmp[0].username,
@@ -334,57 +418,120 @@ const getBalanceCallback = async (username, sessionId, req = null) => {
     }
   });
 };
+const isNegativeNumber = (num) => {
+  if (Math.sign(num) === -1) {
+    return true;
+  }
+
+  return false;
+};
+
+const debitValidationRoundId = (round_id) => {
+  var validationRoundId = history.query({
+    "data.round_id": round_id,
+  });
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (validationRoundId.length >= 2) {
+        return resolve(true);
+      }
+    } catch (err) {
+      return reject(false);
+    }
+  });
+};
 
 const debitBalanceCallback = async (
-  username,
-  sessionId,
+  username = null,
+  sessionId = null,
   amount,
   req = null
 ) => {
   // console.log('start -1');
   var tmp = await users.query({
     username: username,
-    "internal.sessionid": sessionId,
   });
 
   return new Promise(async (resolve, reject) => {
     try {
-      // console.log('-1');
+      if (!shaValidation(req)) {
+        return reject({ status: "500", msg: "internal error" });
+      }
+
+      if (isNegativeNumber(amount)) {
+        return reject({ status: "500", msg: "internal error" });
+      }
 
       if (tmp.length == 0) {
         return reject({ status: "500", msg: "internal error" });
       }
 
-      // console.log('-2');
+      var validationRoundId = await history.query({
+        "data.transaction_id": req.transaction_id,
+        "data.round_id": req.round_id,
+        "data.username": req.username,
+      });
+
+      if (validationRoundId.length == 1) {
+        return reject({
+          status: "200",
+          balance: validationRoundId[0].data.rollback.new,
+        });
+      }
+
+      // var validationRoundId = await history.query({
+      //   "data.transaction_id": req.transaction_id,
+      //   "data.round_id": req.round_id,
+      //   "data.username": req.username,
+      // });
+
+      // if (validationRoundId.length == 1) {
+      //   return reject({ status: "500", msg: "internal error" });
+      // }
+
 
       tmp = await usersModel.findById(tmp[0]._id).exec();
 
-      // console.log('-3');
-      
-     var  balance_prev = parseFloat(tmp.balance);
-      tmp.balance = parseFloat(tmp.balance) - parseFloat(amount);
-       
+      var balance_prev = parseFloat(tmp.balance);
+
+      var response;
+
       const socketClient = socket.getIo();
 
-      socketClient.to("webclient-" + tmp._id).emit("balance", {
-        balance: tmp.balance,
-      });
+      if (balance_prev >= parseFloat(amount)) {
+        tmp.balance = parseFloat(tmp.balance) - parseFloat(amount);
 
-      console.log({
-        balance_prev : balance_prev,
-        balance_result: tmp.balance,
-        amount : parseFloat(amount)
-      })
+        socketClient.to("webclient-" + tmp._id).emit("balance", {
+          balance: tmp.balance,
+        });
 
-      socketClient.to("activity-" + tmp._id).emit("debit-game", {
-        balance_prev : balance_prev,
-        balance_result: tmp.balance,
-        amount : parseFloat(amount)
-      });
+        socketClient.to("activity-" + tmp._id).emit("debit-game", {
+          balance_prev: balance_prev,
+          balance_result: tmp.balance,
+          amount: parseFloat(amount),
+        });
 
-      // console.log('-4');
-      var test = await tmp.save();
-      // console.log('update user', test);
+        var test = await tmp.save();
+
+        response = { status: "200", balance: tmp.balance };
+
+        req.rollback = {
+          amount: parseFloat(amount),
+          new: tmp.balance,
+          old: balance_prev,
+          success: false,
+          success_balance: 0,
+        };
+      } else {
+        req.rollback = {
+          amount: parseFloat(amount),
+          new: tmp.balance,
+          old: balance_prev,
+        };
+
+        response = { status: "403", balance: balance_prev, err: "no balance" };
+      }
 
       if (req) {
         history.crateGame(tmp._id, req, {
@@ -393,10 +540,9 @@ const debitBalanceCallback = async (
         });
       }
 
-      return resolve({ status: "200", balance: tmp.balance });
+      return resolve(response);
     } catch (err) {
-      console.log("error -1 debit", tmp);
-      return reject({ status: "500", msg: "internal error" });
+      return reject({ status: "500", msg: "internal error", err: err });
     }
   });
 };
@@ -407,27 +553,51 @@ const creditBalanceCallback = async (
   amount,
   req = null
 ) => {
-  console.log("start -1");
+  // console.log("start -1");
   var tmp = await users.query({
     username: username,
-    "internal.sessionid": sessionId,
+    // "internal.sessionid": sessionId,
   });
 
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("-1");
+      if (!shaValidation(req)) {
+        return reject({ status: "500", msg: "internal error" });
+      }
+
+      // console.log("-1");
 
       if (tmp.length == 0) {
         return reject({ status: "500", msg: "internal error" });
       }
 
-      console.log("-2");
+      if (isNegativeNumber(amount)) {
+        return reject({ status: "500", msg: "internal error" });
+      }
+
+      // var validationRoundId = await history.query({
+      //   $or: [
+      //     { "data.transaction_id": req.transaction_id },
+      //     { "data.round_id": req.round_id },
+      //   ],
+      // });
+
+      var validationRoundId = await history.query({
+        "data.transaction_id": req.transaction_id,
+        "data.round_id": req.round_id,
+      });
+
+      if (validationRoundId.length == 1) {
+        return reject({ status: "500", msg: "internal error" });
+      }
+
+      // console.log("-2");
 
       tmp = await usersModel.findById(tmp[0]._id).exec();
 
-      console.log("-3");
+      // console.log("-3");
 
-      var  balance_prev = parseFloat(tmp.balance);
+      var balance_prev = parseFloat(tmp.balance);
 
       tmp.balance = parseFloat(tmp.balance) + parseFloat(amount);
 
@@ -438,16 +608,23 @@ const creditBalanceCallback = async (
       });
 
       socketClient.to("activity-" + tmp._id).emit("credit-game", {
-        balance_prev : balance_prev,
+        balance_prev: balance_prev,
         balance_result: tmp.balance,
-        amount : parseFloat(amount)
+        amount: parseFloat(amount),
       });
 
-      console.log("-4");
+      // console.log("-4");
       var test = await tmp.save();
-      console.log("update user", test);
+      // console.log("update user", test);
 
       if (req) {
+        req.rollback = {
+          amount: parseFloat(amount),
+          new: tmp.balance,
+          old: balance_prev,
+          success: false,
+          success_balance: 0,
+        };
         history.crateGame(tmp._id, req, {
           email: tmp.email,
           username: tmp.username,
@@ -456,7 +633,7 @@ const creditBalanceCallback = async (
 
       return resolve({ status: "200", balance: tmp.balance });
     } catch (err) {
-      console.log("error -1 credit", tmp);
+      // console.log("error -1 credit", tmp);
       return reject({ status: "500", msg: "internal error" });
     }
   });
@@ -464,6 +641,7 @@ const creditBalanceCallback = async (
 
 export default {
   getAllByType: getAllByType,
+  rollbackCallback: rollbackCallback,
   creditBalanceCallback: creditBalanceCallback,
   debitBalanceCallback: debitBalanceCallback,
   getBalanceCallback: getBalanceCallback,

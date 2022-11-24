@@ -9,10 +9,10 @@ import { v4 as uuidv4 } from "uuid";
 
 import history from "./history.js";
 import activity from "./activity.js";
-import agents from "./users/agents.js"; 
-import Games from "./users/games.js"; 
+import agents from "./users/agents.js";
+import Games from "./users/games.js";
 
-import HistoryGames from "./users/historyGames.js"; 
+import HistoryGames from "./users/historyGames.js";
 import lodash from "lodash";
 
 const query = async (
@@ -145,7 +145,7 @@ const createBack = async (data) => {
             brands: data.brands,
             enabledAllGames: data.enabledAllGames,
             games: data.games,
-            socket : uuidv4(),
+            socket: uuidv4(),
             automatically_settle: data.automatically_settle,
             agent_data: data.agent_data,
             owner_id: decoded._id,
@@ -171,7 +171,7 @@ const createBack = async (data) => {
 const login = async (data, req = null) => {
   return new Promise((resolve, reject) => {
     query({
-      email: data.email,
+      username: data.email,
       password: data.password,
     }).then((tmp) => {
       if (tmp.length == 0) {
@@ -543,52 +543,44 @@ const balanceSubtract = (owner, userTarget, balance, req) => {
 const getAllAgentsDetails = (date) => {
   console.log("getAllAgentsDetails", date);
   return new Promise(async (resolve, reject) => {
-    agents.getAgentsDetailByData(date[0], date[1]).then(data => {
-       return resolve(data);
-    })
-  })
+    agents.getAgentsDetailByData(date[0], date[1]).then((data) => {
+      return resolve(data);
+    });
+  });
 };
 
-
-
-
-const getAllUsersDetailsByAgent = (agent,date) => {
-  console.log("getAllUsersDetailsByAgent", agent,date);
+const getAllUsersDetailsByAgent = (agent, date) => {
+  console.log("getAllUsersDetailsByAgent", agent, date);
   return new Promise(async (resolve, reject) => {
-    agents.getAllUsersDetailsByAgent(agent,date[0], date[1]).then(data => {
-       return resolve(data);
-    })
-  })
+    agents.getAllUsersDetailsByAgent(agent, date[0], date[1]).then((data) => {
+      return resolve(data);
+    });
+  });
 };
 
-
-
-const getAllHistoryGameByUser = (iduser,date) => {
-  console.log("getAllHistoryGameByUser", iduser,date);
+const getAllHistoryGameByUser = (iduser, date) => {
+  console.log("getAllHistoryGameByUser", iduser, date);
   return new Promise(async (resolve, reject) => {
-    HistoryGames.getAllHistoryGameByUser(iduser,date[0], date[1]).then(data => {
-       return resolve(data);
-    })
-  })
+    HistoryGames.getAllHistoryGameByUser(iduser, date[0], date[1]).then(
+      (data) => {
+        return resolve(data);
+      }
+    );
+  });
 };
 
-const getBestPlayers = (date) => { 
+const getBestPlayers = (date) => {
   return new Promise(async (resolve, reject) => {
-    Games.getBestPlayers(date[0], date[1]).then(data => {
-       return resolve(data);
-    })
-  })
+    Games.getBestPlayers(date[0], date[1]).then((data) => {
+      return resolve(data);
+    });
+  });
 };
-
- 
-
-
-
 
 export default {
-  getBestPlayers : getBestPlayers,
-  getAllHistoryGameByUser : getAllHistoryGameByUser,
-  getAllUsersDetailsByAgent : getAllUsersDetailsByAgent,
+  getBestPlayers: getBestPlayers,
+  getAllHistoryGameByUser: getAllHistoryGameByUser,
+  getAllUsersDetailsByAgent: getAllUsersDetailsByAgent,
   getAllAgentsDetails: getAllAgentsDetails,
   balanceSubtract: balanceSubtract,
   balanceAdd: balanceAdd,

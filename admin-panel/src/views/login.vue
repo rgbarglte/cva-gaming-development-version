@@ -12,9 +12,9 @@
   
   <div  class="container-fluid mt--7">
     <div class="row justify-content-center">
-      <div class="col-lg-5 col-md-7">
+      <div class="col-lg-4 col-md-4">
         <div class="card bg-secondary shadow border-0">
-          <div class="card-header bg-transparent pb-5">
+          <!-- <div class="card-header bg-transparent pb-5">
             <div class="text-muted text-center mt-2 mb-3"><small>Sign in with</small></div>
             <div class="btn-wrapper text-center">
               <a href="#" class="btn btn-neutral btn-icon">
@@ -26,10 +26,11 @@
                 <span class="btn-inner--text">Google</span>
               </a>
             </div>
-          </div>
+          </div> -->
           <div class="card-body px-lg-5 py-lg-5">
             <div class="text-center text-muted mb-4">
-              <small>Or sign in with credentials</small>
+              <img src="https://cva.poker/public/cdn/img/1.svg" class="img-fluid" data-v-0b6ea73a="" style="height: 120px;"/>
+              <!-- <small>Or sign in with credentials</small> -->
             </div>
             <form role="form">
               <div class="form-group mb-3">
@@ -51,23 +52,23 @@
               <div class="custom-control custom-control-alternative custom-checkbox">
                 <input class="custom-control-input" id=" customCheckLogin" type="checkbox">
                 <label class="custom-control-label" for=" customCheckLogin">
-                  <span class="text-muted">Remember me</span>
+                  <span class="text-muted">Recordarme</span>
                 </label>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary my-4" @click.prevent="submitLogin()">Sign in</button>
+                <button type="button" class="btn btn-primary my-4" @click.prevent="submitLogin()">Iniciar sesion</button>
               </div>
             </form>
           </div>
         </div>
-        <div class="row mt-3">
+        <!-- <div class="row mt-3">
           <div class="col-6">
             <a href="#" class="text-light"><small>Forgot password?</small></a>
           </div>
           <div class="col-6 text-right">
             <a href="#" class="text-light"><small>Create new account</small></a>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -153,7 +154,7 @@ export default {
             title: 'Iniciar sesion',
             message: "Contraseña o E-Mail erroneo.",
             position: 'bottom-right',
-            duration: 0,
+            duration: 2500,
           })
           localStorage.setItem("auth", false);
           return;
@@ -166,7 +167,7 @@ export default {
           duration: 0,
         })
         setTimeout(() => {
-          window.location.href = '/jugadores';
+          window.location.href = '/dashboard';
         }, 1500)
       })
     }

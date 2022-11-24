@@ -42,6 +42,17 @@ router.post("/update", async (req, res) => {
   
 });
 
+ 
+router.post("/upload", async (req, res) => {
+  games.uploadImagesTemp(req, res).then((data) => {
+    console.log(data)
+    res.send(data);
+}).catch((err) => {
+    res.send(err);
+});
+  
+});
+
 
 
  

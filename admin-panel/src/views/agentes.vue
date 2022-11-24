@@ -78,15 +78,25 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in users">
+                <tr v-for="item in filterAgents">
                   <th scope="row">
+                    
+     
                     <a :href="'/agentes/' + item._id" class="media align-items-center">
-                      <a href="#" @click.prevent="" class="avatar rounded-circle mr-3">
+                      <div  class="avatar rounded-circle mr-3">
                         <img alt="Image placeholder"
                           :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.username">
-                      </a>
+                      </div>
                       <div class="media-body">
-                        <span class="mb-0 text-sm">{{ item.username }}</span>
+                        <el-tooltip
+        class="box-item"
+        effect="dark"
+        :content="'Ver jugadores del agente ' + item.username "
+        placement="bottom-start"
+      >
+      <span class="mb-0 text-sm">{{ item.username }}</span>
+      </el-tooltip>
+                         
                       </div>
                     </a>
                   </th>
@@ -111,7 +121,7 @@
               </tbody>
             </table>
           </div>
-          <div class="card-footer py-4">
+          <!-- <div class="card-footer py-4">
             <nav aria-label="...">
               <ul class="pagination justify-content-end mb-0">
                 <li class="page-item disabled">
@@ -135,7 +145,7 @@
                 </li>
               </ul>
             </nav>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -523,6 +533,22 @@ export default {
       }
     };
   },
+  computed: {
+        filterAgents() {
+            if (this.search.user) {
+                return this.users.filter((item) => {
+                    if (item._id === this.search.user) {
+                        return item;
+                    }
+                })
+
+
+            } else {
+                return this.users;
+            }
+
+        }
+    },
   created() {
     this.loadUsers();
     this.loadBrands();

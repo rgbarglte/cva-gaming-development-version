@@ -20,32 +20,26 @@
 
              <div class="row">
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="example-datetime-local-input" class="form-control-label"  style="display:block">Filtrar por jugador</label>
-    <!-- <select class="form-control" id="exampleFormControlSelect1">
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
-    </select> -->
-    <el-autocomplete
-        v-model="search.target"
-        :fetch-suggestions="searchUsers"
-        clearable
-        class="inline-input w-50"
-        placeholder="Please Input"
-        
-        value-key="email"
-        style="width:100%;"
-      />
+                  <el-select v-model="search.user" placeholder="Buscar jugador..." style="width: 100%" filterable
+                  @change="changeUser()" clearable>
 
+                  <el-option v-for="item in users" :key="item" :label="item.username" :value="item._id"
+                    style="height: 40px;">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar rounded-circle mr-3" style="height:30px;width:30px;">
+                        <img style="height:30px;width:30px;" alt="Image placeholder"
+                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.username">
+                      </a>
+                      <div class="media-body">
+                        <span class="mb-0 text-sm bold"><b>{{ item.username }}</b></span>
+                      </div>
                     </div>
+                  </el-option>
+                </el-select>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group"> 
-                          <!-- <input class="form-control" type="datetime-local" value="2018-11-23T10:30:00" id="example-datetime-local-input"> -->
-                          <label for="example-datetime-local-input" class="form-control-label" style="display:block">Filtrar por fecha</label>
+                            <!-- <input class="form-control" type="datetime-local" value="2018-11-23T10:30:00" id="example-datetime-local-input"> -->
+                          <!-- <label for="example-datetime-local-input" class="form-control-label" style="display:block">Filtrar por fecha</label> -->
                           <el-date-picker
         v-model="search.date"
         type="daterange"
@@ -57,11 +51,10 @@
   new Date(),
 ]"
       />
-
-                    </div>
+ 
                 </div>
              </div>
-             <el-pagination
+             <!-- <el-pagination
     small
     background
     layout="prev, pager, next"
@@ -70,13 +63,14 @@
     :page-size="30"
     class="mt-4"
     @current-change="nextPage"
-  />
+  /> -->
 
 
            </div>  
 
-           
-           <div class="table-responsive">
+           <el-skeleton :rows="40" animated v-if="loading.activity" style="margin:20px;" />
+
+           <div class="table-responsive" v-if="!loading.activity">
              <table class="table align-items-center table-flush">
                <thead class="thead-light">
                  <tr>
@@ -92,7 +86,7 @@
                  </tr>
                </thead>
                <tbody>
-                 <tr v-for="item in  activity">
+                 <tr v-for="item in  filterAgents">
                   <th scope="row">
                     <div class="media align-items-center">
                       <a href="#" class="avatar rounded-circle mr-3">
@@ -267,8 +261,9 @@
           date : '',
           target : '',
           type : '',
+          user : '',
         },
-  
+        users : [],
         activeTabNewForm : 'Usuario',
         pagination: {
           activity: 0,
@@ -319,6 +314,23 @@
     },
     created() {
       this.loadActivity(); 
+      this.loadUsers();
+    },
+    computed: {
+        filterAgents() {
+            if (this.search.user) {
+                return this.activity.filter((item) => {
+                    if (item.user._id === this.search.user) {
+                        return item;
+                    }
+                })
+
+
+            } else {
+                return this.activity;
+            }
+
+        }
     },
     methods: {
       nextPage(pages) {
@@ -332,6 +344,12 @@
         })
  
       },
+      loadUsers() {
+      sdk.users.getAll(0).then(data => {
+        this.users = data; 
+      })
+    },
+
   
       loadActivity() {
  

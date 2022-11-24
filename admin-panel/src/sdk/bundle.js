@@ -10,6 +10,8 @@ import tools from './tools.js';
 import platform from './platform.js';
 
 import generalChat from './general/chat.js';
+import settings from './settings.js';
+
 
 export default {
     games : games,
@@ -23,5 +25,6 @@ export default {
     platform : platform,
     general : {
         chat : generalChat
-    }
+    },
+    settings : settings
 }

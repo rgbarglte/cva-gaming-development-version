@@ -96,16 +96,16 @@
 
 
           <li class="nav-item  "> 
-            <RouterLink class="nav-link" to="/movimientos"> <i class="ni ni-tv-2 text-primary"></i> Movimientos <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+            <RouterLink class="nav-link" to="/movimientos"> <i class="ni ni-tv-2 text-primary"></i> Movimientos</RouterLink> 
           </li>
 
 
           <li class="nav-item  "> 
-            <RouterLink class="nav-link" to="/jugadores"> <i class="ni ni-tv-2 text-primary"></i> Jugadores <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+            <RouterLink class="nav-link" to="/jugadores"> <i class="ni ni-tv-2 text-primary"></i> Jugadores </RouterLink> 
           </li>
 
           <li class="nav-item  "> 
-            <RouterLink class="nav-link" to="/agentes"> <i class="ni ni-tv-2 text-primary"></i> Agentes  <span class="badge badge-dot mr-4"><i class="bg-info"></i></span>  </RouterLink> 
+            <RouterLink class="nav-link" to="/agentes"> <i class="ni ni-tv-2 text-primary"></i> Agentes</RouterLink> 
           </li>
 
 
@@ -170,11 +170,11 @@
           </li> -->
         </ul>
         <!-- Divider -->
-        <hr class="my-3">
+        <!-- <hr class="my-3"> -->
         <!-- Heading -->
-        <h6 class="navbar-heading text-muted">Submenu</h6>
+        <!-- <h6 class="navbar-heading text-muted">Submenu</h6> -->
         <!-- Navigation -->
-        <ul class="navbar-nav mb-md-3">
+        <!-- <ul class="navbar-nav mb-md-3">
           <li class="nav-item">
             <a class="nav-link" href="#">
               <i class="ni ni-spaceship"></i> Link submenu
@@ -194,7 +194,7 @@
             <a class="nav-link" href="#">
               <i class="ni ni-spaceship"></i> Link submenu
             </a>
-          </li>
+          </li> -->
           <!-- <li class="nav-item">
             <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/foundation/colors.html">
               <i class="ni ni-palette"></i> Foundation
@@ -205,7 +205,7 @@
               <i class="ni ni-ui-04"></i> Components
             </a>
           </li> -->
-        </ul>
+        <!-- </ul> -->
         <!-- <ul class="navbar-nav">
           <li class="nav-item active active-pro">
             <a class="nav-link" href="./examples/upgrade.html">

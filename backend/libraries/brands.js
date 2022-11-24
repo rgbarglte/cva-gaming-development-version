@@ -2,6 +2,15 @@ import model from "./../models/games.js";
 import modelBrand from "./../models/brands.js";
 import products from "./../libraries/SDK/games/games.js";
 import slug from 'limax';
+import { uuid } from 'uuidv4';
+ 
+import path from "path";
+import fs from "fs";
+
+
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 const create = async (data) => {
@@ -150,6 +159,7 @@ const update = (id,data) => {
   tmpUpdate['name'] = data['name'];
   tmpUpdate['slug'] = data['slug'];
   tmpUpdate['internal'] = data['internal'];
+  tmpUpdate['thumb'] = data['thumb'];
   
   return resolve(await tmpUpdate.save());
   })
@@ -294,10 +304,42 @@ const createDbInternal = () => {
 });
 };
 
-
+const uploadImagesTemp = (req, res)  => {
+  if (
+    !fs.existsSync(
+      path.join(__dirname, "../uploads/brands")
+    )
+  ) {
+    fs.mkdirSync(
+      path.join(__dirname, "../uploads/brands")
+    );
+  }
+  return new Promise((resolve, reject) => {
+    if (!req.files) {
+      reject({
+        status: false,
+        message: "No file uploaded",
+      });
+    } else {
+      let file = req.files.file;
+      const nameRandom = uuid() + path.extname(file.name);
+      file.mv(
+        path.join(__dirname, "../uploads/brands") +
+          "/" +
+          nameRandom
+      );
+      //send response
+      resolve({
+        success: "ok",
+        name: nameRandom,
+      });
+    }
+  });
+}
  
 
 export default {
+  uploadImagesTemp : uploadImagesTemp,
   create: create, 
   getByStatus: getByStatus,
   getAll: getAll, 

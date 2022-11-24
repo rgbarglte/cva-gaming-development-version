@@ -35,17 +35,17 @@
                             <tbody>
                                 <tr v-for="item in history" v-if="history.length > 0">
                                     <th scope="row">
-                                        {{item.name}}
+                                      <img :src="urlImages + item.thumb" class="img-fluid" style="    max-width: 30px;background:black" />  {{ item.name }}
                                     </th>
                                     <td>
-                                        {{item.slug}}
+                                        {{ item.slug }}
                                     </td>
                                     <td>
                                         <b class="text-success" v-if="item.active">Si</b>
                                         <b class="text-danger" v-if="!item.active">No</b>
                                     </td>
                                     <td>
-                                        {{item.createdAt}}
+                                        {{ item.createdAt }}
                                     </td>
 
                                     <td>
@@ -106,6 +106,26 @@
                                 v-model="editTarget.slug" />
                         </div>
 
+                        <div class="form-group col-12">
+                            <label class="form-control-label">Thumb</label>
+                            <el-upload show-file-list="false" class="avatar-uploader" :action="endpoint + 'brands/upload'" :on-success="
+                                (req, file) => {
+                                    if (req.success) {
+                                        imageUrl.value = createObject(file.raw)
+                                        editTarget.thumb = req.name
+                                    }
+                                    loading.editButton = false;
+                                }
+                            " :before-upload="() => {
+    loading.editButton = true
+}">
+                                <img v-if="imageUrl" :src="imageUrl.value" class="avatar" />
+                                <el-icon v-else class="avatar-uploader-icon">
+                                    <Plus />
+                                </el-icon>
+                            </el-upload>
+                        </div>
+
 
 
                     </form>
@@ -116,7 +136,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" @click.prevent="save()">Editar marca</button>
+                    <el-button type="button" class="btn btn-primary" @click.prevent="save()" size="large"
+                        :loading="loading.editButton">Editar marca</el-button>
                 </div>
             </div>
         </div>
@@ -133,6 +154,36 @@
 
 
 
+<style scoped>
+.avatar-uploader .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+}
+</style>
+
+<style>
+.avatar-uploader .el-upload {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+    border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    text-align: center;
+}
+</style>
 
 
 <script>
@@ -146,14 +197,20 @@ export default {
                 target: '',
                 type: '',
             },
+            endpoint: sdk.settings.host,
 
             activeTabNewForm: 'Usuario',
             pagination: {
                 history: 0,
                 brands: 0,
             },
+            urlImages : "https://cvagaming.com/brands/",
+            imageUrl: {
+                value: 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=',
+            },
             loading: {
                 history: true,
+                editButton: false
             },
             history: [],
             users: [],
@@ -162,7 +219,9 @@ export default {
                 active: false,
                 activeLoginOnly: false,
                 activeGroupOnly: false,
+                thumb: '',
             },
+
             forms: {
                 user: {
                     email: '',
@@ -199,6 +258,10 @@ export default {
         this.loadHistory();
     },
     methods: {
+        createObject(raw) {
+            console.log(raw)
+            return URL.createObjectURL(raw)
+        },
         disabledEnabled(item) {
             sdk.brands.updateField(item._id, 'active', item.active).then(data => {
                 this.$toast.success(
@@ -237,6 +300,7 @@ export default {
 
         openEdit(target) {
             this.editTarget = target;
+            this.imageUrl.value = this.urlImages + this.editTarget.thumb;
             $('#openEdit').modal('show')
         }
 

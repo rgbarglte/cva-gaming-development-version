@@ -1,6 +1,6 @@
  
 <template>
-    <navBarTop  v-if="showLayout" style="    background: var(--green);
+    <navBarTop  v-if="showLayout" style="    background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
     z-index: 500;position:fixed;top:0;left:0;right:0;
 }"/>
   <navBar v-if="showLayout" />

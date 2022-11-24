@@ -24,14 +24,17 @@ const createLogin = async (userid, req, userdata = null) => {
     return err;
   }
 };
+ 
+
 
 const crateGame = async (userid, query, userdata = null) => {
   
   if(query.amount) {
     query.amount = parseInt(query.amount);
-  } else {
-    query.amount = parseInt(0);
-  }
+  } 
+  // else {
+  //   query['amount'] = 0;
+  // }
   const data = {
     userid: userid,
     type: "games",

@@ -13,8 +13,12 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "express-useragent": "^1.0.15",
+    "http-build-query": "^0.7.0",
     "moongose": "^1.0.0",
     "node-fetch": "^3.2.10",
+    "sha1-hash-and-verify": "^1.0.4",
     "socket.io": "^4.5.2"
   }
 }

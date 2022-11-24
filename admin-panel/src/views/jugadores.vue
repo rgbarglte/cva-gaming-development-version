@@ -79,7 +79,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in users">
+                <tr v-for="item in filterAgents">
                   <th scope="row">
                     <div class="media align-items-center">
                       <a href="#" class="avatar rounded-circle mr-3">
@@ -107,26 +107,12 @@
                   <td>
                     <a :href="'/actividad/vivo/' + item._id" class="btn btn-primary btn-sm">Vista en vivo</a>
                   </td>
-                  <td class="text-right">
-                    <button class="btn btn-outline-danger btn-sm">Eliminar jugador</button>
-
-                    <div class="dropdown">
-                      <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v"></i>
-                      </a>
-                      <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                      </div>
-                    </div>
-                  </td>
+                  
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="card-footer py-4">
+          <!-- <div class="card-footer py-4">
             <nav aria-label="...">
               <ul class="pagination justify-content-end mb-0">
                 <li class="page-item disabled">
@@ -150,7 +136,7 @@
                 </li>
               </ul>
             </nav>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -562,6 +548,22 @@ export default {
 
 
   },
+  computed: {
+        filterAgents() {
+            if (this.search.user) {
+                return this.users.filter((item) => {
+                    if (item._id === this.search.user) {
+                        return item;
+                    }
+                })
+
+
+            } else {
+                return this.users;
+            }
+
+        }
+    },
   methods: {
     searchSubmit() {
       console.log(this.search)

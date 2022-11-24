@@ -6,10 +6,7 @@ import activity from "./routes/activity.js";
 import platform from "./routes/platform.js";
 import types from "./routes/types.js";
 
-
 import GeneralChat from "./routes/general/chat.js";
-
-
 
 import express from "express";
 
@@ -27,8 +24,13 @@ import history from "connect-history-api-fallback";
 
 const app = express();
 
-import { Server } from "socket.io";
+import { Server } from "socket.io"; 
 
+import fileUpload from 'express-fileupload';
+
+app.use(fileUpload({
+  createParentPath: true
+}));
 app.use(useragent.express());
 app.use(express.json());
 app.use(
@@ -40,20 +42,21 @@ app.use(
 import gamesLib from "./libraries/games.js";
 import socket from "./services/socket.js";
 
-
 var serverHttps;
 
 app.get("/", function (req, res) {
-  console.log("/",path.join(__dirname, "public") + "/index.html");
+  console.log("/", path.join(__dirname, "public") + "/index.html");
   res.sendFile(path.join(__dirname, "public") + "/index.html");
 });
-
-
 
 app.get("/web", function (req, res) {
-  console.log("/we",path.join(__dirname, "public") + "/index.html");
+  console.log("/we", path.join(__dirname, "public") + "/index.html");
   res.sendFile(path.join(__dirname, "public") + "/index.html");
 });
+
+
+app.use(express.static(path.join(__dirname, 'uploads')));
+
 
 
 // app.get("/socket.io", function (req, res) {
@@ -61,20 +64,39 @@ app.get("/web", function (req, res) {
 //       console.log('connected success');
 //     })
 // });
-   
 
-app.get("/platform/internal/callback", async (req, res) => {
-  console.log("get", req.query);
+app.get("/v2/bo/games/callback", async (req, res) => {
+  if (req.query.action == "rollback") {
+    gamesLib
+      .rollbackCallback(req.query)
+      .then((data) => {
+        console.log(
+          "endpoint rollbackCallback",
+          data,
+          "transaction_id",
+          req.transaction_id
+        );
+        return res.json(data);
+      })
+      .catch((err) => {
+        return res.json(err);
+      });
+  }
 
   if (req.query.action == "balance") {
     gamesLib
       .getBalanceCallback(req.query.username, req.query.session_id, req.query)
       .then((data) => {
-        console.log("endpoint", data);
-        res.json(data);
+        console.log(
+          "endpoint getBalanceCallback",
+          data,
+          "transaction_id",
+          req.transaction_id
+        );
+        return res.json(data);
       })
       .catch((err) => {
-        res.json(err);
+        return res.json(err);
       });
   }
 
@@ -87,11 +109,16 @@ app.get("/platform/internal/callback", async (req, res) => {
         req.query
       )
       .then((data) => {
-        console.log("endpoint", data);
-        res.json(data);
+        console.log(
+          "endpoint debitBalanceCallback",
+          data,
+          "transaction_id",
+          req.transaction_id
+        );
+        return res.json(data);
       })
       .catch((err) => {
-        res.json(err);
+        return res.json(err);
       });
   }
 
@@ -104,11 +131,16 @@ app.get("/platform/internal/callback", async (req, res) => {
         req.query
       )
       .then((data) => {
-        console.log("endpoint", data);
-        res.json(data);
+        console.log(
+          "endpoint creditBalanceCallback",
+          data,
+          "transaction_id",
+          req.transaction_id
+        );
+        return res.json(data);
       })
       .catch((err) => {
-        res.json(err);
+        return res.json(err);
       });
   }
 
@@ -135,19 +167,7 @@ const start = () => {
 
   app.use(history());
   app.use(express.static(path.join(__dirname, "public")));
-  // app.use(express.static(path.join(__dirname, 'uploads')));
-  // app.set('puerto', process.env.PORT || 80);
-
- 
-  app.get("/platform/internal/callback", function (req, res) {
-    console.log("get", req.query);
-    res.json({ status: "200", balance: "300.00" });
-  });
-  // app.post("/platform/internal", function (req, res) {
-  //   console.log("post", req.body);
-  //   res.json({"status":"200","balance":"300.00"});
-  // });
-
+  
   app.use(games.endpoint, games.router);
   app.use(brands.endpoint, brands.router);
   app.use(users.endpoint, users.router);
@@ -155,11 +175,9 @@ const start = () => {
   app.use(activity.endpoint, activity.router);
   app.use(types.endpoint, types.router);
   app.use(platform.endpoint, platform.router);
-  
-  // General endpoints
-  app.use(GeneralChat.endpoint,GeneralChat.router);
 
- 
+  // General endpoints
+  app.use(GeneralChat.endpoint, GeneralChat.router);
 
     serverHttps = createServer(
     {
@@ -175,14 +193,12 @@ const start = () => {
     },
     app
   ).listen(443, () => console.log("HTTPS Server Started"));
-  // http server
-  createServerHttp(app).listen(80, () => console.log("HTTP Server Started"));
- 
-   
+  
+  createServerHttp(app).listen(999, () => console.log("HTTP Server Started"));
 
-  socket.start(serverHttps).then(socket => {
-    console.log('connected success');
-  })
+  socket.start(serverHttps).then((socket) => {
+    console.log("connected success");
+  });
 
   // io.on("connection", function (socket) {
   //   console.log("User has connected to Index");
