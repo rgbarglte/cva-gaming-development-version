@@ -29,7 +29,7 @@
           </div> -->
           <div class="card-body px-lg-5 py-lg-5">
             <div class="text-center text-muted mb-4">
-              <img src="https://cva.poker/public/cdn/img/1.svg" class="img-fluid" data-v-0b6ea73a="" style="height: 120px;"/>
+              <img src="@/assets/logocvagaming.png" class="img-fluid" data-v-0b6ea73a="" style="height: 120px;"/>
               <!-- <small>Or sign in with credentials</small> -->
             </div>
             <form role="form">
@@ -56,7 +56,7 @@
                 </label>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary my-4" @click.prevent="submitLogin()">Iniciar sesion</button>
+                <el-button type="button" class="btn btn-primary my-4 col-12" size="large" @click.prevent="submitLogin()" :loading="loading.submit" >Iniciar sesion</el-button>
               </div>
             </form>
           </div>
@@ -101,6 +101,7 @@ export default {
         brands: 0,
       },
       loading: {
+        submit : false,
         activity: true,
       },
       editBalance: {
@@ -148,7 +149,12 @@ export default {
   methods: {
 
     submitLogin() {
+      this.loading.submit = true;
       sdk.users.login(this.login.email, this.login.password).then(data => {
+        setTimeout(() => {
+          this.loading.submit = false;
+        }, 1500)
+        
         if (data.error) {
           ElNotification({
             title: 'Iniciar sesion',

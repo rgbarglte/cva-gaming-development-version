@@ -103,20 +103,20 @@
             <RouterLink class="nav-link" to="/jugadores"> <i class="ni ni-tv-2 text-primary"></i> Jugadores </RouterLink> 
           </li>
 
-          <li class="nav-item  "> 
+          <li class="nav-item  " v-if="(forms.user.isAgent == false)"> 
             <RouterLink class="nav-link" to="/agentes"> <i class="ni ni-tv-2 text-primary"></i> Agentes</RouterLink> 
           </li>
 
 
 
-          <li class="nav-item  "> 
+          <li class="nav-item  " v-if="(forms.user.isAgent == false)"> 
             <RouterLink class="nav-link" to="/juegos/categorias"> <i class="ni ni-tv-2 text-primary"></i> Categorias de juegos</RouterLink> 
           </li>
 
 
 
 
-          <li class="nav-item  "> 
+          <li class="nav-item  " v-if="(forms.user.isAgent == false)"> 
             <RouterLink class="nav-link" to="/juegos/marcas"> <i class="ni ni-tv-2 text-primary"></i> Marcas de juegos</RouterLink> 
           </li>
 
@@ -216,3 +216,86 @@
     </div>
   </nav>
 </template>
+
+
+<script>
+import sdk from '@/sdk/bundle.js';
+
+export default {
+    data() {
+        return {
+            showDialog: false,
+            deleteUserTarget: '',
+            search: {
+                user: '',
+                date: '',
+                target: '',
+                type: '',
+            },
+
+            activeTabNewForm: 'Usuario',
+            pagination: {
+                users: 0,
+                brands: 0,
+            },
+            loading: {
+                widgetUser : true,
+                users: true,
+            },
+            editBalance: {
+                type: 'add',
+                balance: 0,
+                user: {}
+            },
+            users: [],
+            brands: [],
+            agents: [],
+            forms: {
+                user: {
+                    email: '',
+                    password: '',
+                    username: '',
+                    nickname: '',
+                    balance: 0,
+                    isAgent: false,
+                    automatically_settle: false,
+                    enabledAllBrands: true,
+                    brands: [],
+                    enabledAllGames: true,
+                    games: [],
+                    agent_data: {
+                        firstname: '',
+                        lastname: '',
+                        phone: '',
+                        dni: ''
+                    },
+                    profile: {
+                        firstname: '',
+                        lastname: '',
+                        address: '',
+                        city: '',
+                        country: '',
+                        zip: '',
+                        about: '',
+                    },
+                }
+            }
+        };
+    },
+    created() {
+       this.init()
+    }, 
+    methods: { 
+     
+
+        init() {
+            sdk.users.auth().then(data => {
+              this.forms.user = data[0];
+               
+            })
+        }  
+    },
+};
+
+
+</script>

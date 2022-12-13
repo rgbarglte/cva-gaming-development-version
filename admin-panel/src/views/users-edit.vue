@@ -81,9 +81,9 @@
                 <div class="col-8">
                   <h3 class="mb-0">Editar usuario</h3>
                 </div>
-                <div class="col-4 text-right">
+                <!-- <div class="col-4 text-right">
                   <a href="#!" class="btn btn-sm btn-primary">Guardar cambios</a>
-                </div>
+                </div> -->
               </div>
             </div>
             
@@ -409,7 +409,7 @@ export default {
   
     init() {
       sdk.users.get(this.$route.params.id).then(response => {
-      // alert(JSON.stringify(response));
+      // alert(JSON.stringify(response)); 
       this.forms.user = response[0];
     })
     }
