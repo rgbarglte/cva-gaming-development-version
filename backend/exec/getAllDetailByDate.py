@@ -12,7 +12,7 @@ DateStart = sys.argv[2]
 DateEnd = sys.argv[3]
 
 
-uri = "mongodb://app:43119739Ramiro@75.102.23.162:27017/?authMechanism=DEFAULT"
+uri = "mongodb://cva:43119739@127.0.0.1:27017/?authMechanism=DEFAULT"
 client = MongoClient(uri)
 
 # Access database object
@@ -41,7 +41,7 @@ for xuser in collectionUsers.find({
 
     for userChild in collectionUsers.find({
         "agent_id": str(xuser["_id"])
-    }):
+    }): 
 
         xDebitAgg = collection.aggregate([
             {
@@ -159,9 +159,9 @@ totalBalanceAdd = collectionActivities.aggregate([
                                          }
                                      }
                                  ]
-                             }
+                             } 
                         ]
-                    }
+                    } 
                 }
             },
             {"$group": {"_id": "test", "amount": {"$sum": "$data.balance.target"}}}
