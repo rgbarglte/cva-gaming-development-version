@@ -4,14 +4,15 @@ import activity from "./../libraries/activity.js";
 const router = express.Router();
 
 router.post("/balance", async (req, res) => {
-  res.json(await activity.getAllBalance(req.body.page, req.body.filter));
+  res.json(await activity.getAllBalance(req.body.page, req.body.filter , req.body.auth));
 });
 router.post("/balance/user", async (req, res) => {
   res.json(
     await activity.getAllBalanceByUser(
       req.body.page,
       req.body.filter,
-      req.body.user
+      req.body.user,
+      req.body.auth
     )
   );
 });

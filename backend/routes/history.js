@@ -6,7 +6,7 @@ const router = express.Router();
  
 
 router.post("/login", async (req, res) => {
-  res.json(await history.getAllLogin(req.body.page,req.body.filter));
+  res.json(await history.getAllLogin(req.body.page,req.body.filter,req.body.auth));
 });
  
 

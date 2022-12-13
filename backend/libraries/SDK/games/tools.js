@@ -8,7 +8,7 @@ const shaValidation = (data) => {
 
   var string = httpBuildQuery(data);
 
-  var pw = "SuaiPL6G7i";
+  var pw = "r5M2e28MLe";
 
   const hashedData = sha1(pw + string);
 

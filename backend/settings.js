@@ -4,20 +4,22 @@ export default {
   sdk: {
     games: {
        homeurl : "http://cvamagazine.com",
-      host: "https://stage.game-program.com/api/seamless/provider",
+      host: "https://em-api.thegameprovider.com/api/seamless/provider",
       username: "cvagaming_mc_s",
-      password: "LTHuScC2vhloER9OCi",
+      password: "6hiQpZIoVLzYHirjN6",
     },
   },
   mongodb: {
     host: "127.0.0.1",
     port: "27017",
     auth: {
-      username: "admin",
-      password: "43119739Ramiro",
+      username: "cva",
+      password: "43119739",
     },
   },
   py: {
     scriptPath: "../../",
   },
 };
+
+ 

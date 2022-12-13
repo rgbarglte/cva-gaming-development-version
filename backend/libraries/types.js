@@ -1,6 +1,18 @@
 import model from "./../models/types.js";
 import products from "./../libraries/SDK/games/games.js";
 import modelProducts from "./../models/games.js";
+import { uuid } from "uuidv4";
+import path, { resolve } from "path";
+import fs from "fs";
+
+
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+
 const create = async (data) => {
   const temp = new model(data);
   try {
@@ -53,18 +65,37 @@ const querydistinct = async (
   }
 };
 
-const getAll = async (pageNumber = 1) => {
+const getAll = async (pageNumber = 1,active = true) => {
   var pageSize = 50;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
 
-  const tmp = await query({}, {}, limit, {}, skip);
+  const tmp = await query({
+    // "active" : active
+  }, {}, limit, {}, skip);
   try {
     return tmp;
   } catch (err) {
     return err;
   }
 };
+
+
+const getAllFrontend = async (pageNumber = 1,active = true) => {
+  var pageSize = 50;
+  var limit = pageSize;
+  var skip = pageSize * pageNumber;
+
+  const tmp = await query({
+      "active" : active
+  }, {}, limit, {}, skip);
+  try {
+    return tmp;
+  } catch (err) {
+    return err;
+  }
+};
+
 
 const getByStatus = async (status = true) => {
   const tmp = await query({
@@ -215,15 +246,14 @@ const getAllBySlugBrand = async (slug, pageNumber = 1) => {
 
 const createDbInternal = () => {
   console.log("createDbInternal");
-  getAll().then((data) => {
+  querydistinct({},{},50000,{},{},"internal.type").then((data) => {
     console.log("test", data);
-    data.forEach((element) => {
-      console.log("forEach", element);
-
+    data.forEach((element) => { 
       create({
         name: element.replace("-", " "),
         slug: element,
         internal: element,
+        thumb:''
       });
     });
   });
@@ -247,15 +277,41 @@ const update = (id, data) => {
     tmpUpdate["name"] = data["name"];
     tmpUpdate["slug"] = data["slug"];
     tmpUpdate["internal"] = data["internal"];
+    tmpUpdate["thumb"] = data["thumb"];
 
     return resolve(await tmpUpdate.save());
   });
 };
 
+const uploadImagesTemp = (req, res) => {
+  if (!fs.existsSync(path.join(__dirname, "../uploads/types"))) {
+    fs.mkdirSync(path.join(__dirname, "../uploads/types"));
+  }
+  return new Promise((resolve, reject) => {
+    if (!req.files) {
+      reject({
+        status: false,
+        message: "No file uploaded",
+      });
+    } else {
+      let file = req.files.file;
+      const nameRandom = uuid() + path.extname(file.name);
+      file.mv(path.join(__dirname, "../uploads/types") + "/" + nameRandom);
+      //send response
+      resolve({
+        success: "ok",
+        name: nameRandom,
+      });
+    }
+  });
+};
 export default {
+  uploadImagesTemp : uploadImagesTemp,
+  createDbInternal:createDbInternal,
   create: create,
   getByStatus: getByStatus,
   getAll: getAll,
+  getAllFrontend : getAllFrontend,
   getAllByIdCollection: getAllByIdCollection,
   getAllBySlugCollection: getAllBySlugCollection,
   getAllLast: getAllLast,

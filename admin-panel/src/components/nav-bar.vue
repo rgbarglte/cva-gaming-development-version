@@ -26,8 +26,7 @@
           <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle">
-                <img alt="Image placeholder" src="./assets/img/theme/team-1-800x800.jpg
-">
+                <img alt="Image placeholder" src="https://via.placeholder.com/150">
               </span>
             </div>
           </a>
@@ -123,7 +122,7 @@
 
 
           <li class="nav-item    "> 
-            <RouterLink class="nav-link" to="/log/ip"> <i class="ni ni-tv-2 text-primary"></i> Registros ip <span class="badge badge-dot mr-4"><i class="bg-info"></i></span></RouterLink> 
+            <RouterLink class="nav-link" to="/log/ip"> <i class="ni ni-tv-2 text-primary"></i> Registros ip</RouterLink> 
           </li>
 
 
@@ -132,7 +131,7 @@
 
 
 
-          <li class="nav-item    "> 
+          <li class="nav-item"> 
             <RouterLink class="nav-link" to="/chat"> <i class="ni ni-tv-2 text-primary"></i> Chat</RouterLink> 
           </li>
 
@@ -141,9 +140,9 @@
            
 
 
-          <li class="nav-item    "> 
+          <!-- <li class="nav-item    "> 
             <RouterLink class="nav-link" to="/crm"> <i class="ni ni-tv-2 text-primary"></i> Crm <span class="badge badge-dot mr-4"><i class="bg-warning"></i></span></RouterLink> 
-          </li>
+          </li> -->
 
 
 

@@ -25,6 +25,18 @@ const router = createRouter({
         },
      },  
 
+     
+
+     {
+        path: "/sportsbooks", 
+        component: () =>
+            import ("../views/sportsbook.vue"),
+        meta: {
+            layout: false,
+            auth:false,
+        },
+     },
+
      {
         path: "/type/:slug", 
         component: () =>

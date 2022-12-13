@@ -5,12 +5,13 @@
       <span class="mask bg-gradient-default opacity-8"></span>
       <!-- Header container -->
       <div class="container-fluid d-flex align-items-center">
-        <div class="row">
+        <div class="row" style="width:100%">
           <div class="col-lg-7 col-md-10">
-            <h1 class="display-2 text-white">Hello Jesse</h1>
-            <p class="text-white mt-0 mb-5">This is your profile page. You can see the progress you've made with your work and manage your projects or assigned tasks</p>
-            <a href="#!" class="btn btn-info">Edit profile</a>
-          </div>
+            <h1 class="display-2 text-white">{{forms.user.username}}</h1>
+            <p class="text-white ">{{forms.user.profile.firstname}} {{forms.user.profile.lastname}}</p>
+            <p class="text-white " style="font-size:12px">{{forms.user.email}}</p>
+            <el-button href="#!" class="btn btn-info" @click.prevent="editBalanceModal()" size="large" :loading="loading.buttonBalance">Cargar / Descargar fichas</el-button>
+          </div>  
         </div>
       </div>
     </div>
@@ -23,15 +24,15 @@
               <div class="col-lg-3 order-lg-2">
                 <div class="card-profile-image">
                   <a href="#">
-                    <img src="../assets/img/theme/team-4-800x800.jpg" class="rounded-circle">
+                    <img  :src="'https://ui-avatars.com/api/?size=512&background=5e72e4&color=fff&name=' + forms.user.username"  class="rounded-circle">
                   </a>
                 </div>
               </div>
             </div>
             <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
               <div class="d-flex justify-content-between">
-                <a href="#" class="btn btn-sm btn-info mr-4">Connect</a>
-                <a href="#" class="btn btn-sm btn-default float-right">Message</a>
+                <!-- <a href="#" class="btn btn-sm btn-info mr-4">Connect</a>
+                <a href="#" class="btn btn-sm btn-default float-right">Message</a> -->
               </div>
             </div>
             <div class="card-body pt-0 pt-md-4">
@@ -39,28 +40,28 @@
                 <div class="col">
                   <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                     <div>
-                      <span class="heading">22</span>
-                      <span class="description">Friends</span>
+                      <!-- <span class="heading">22</span>
+                      <span class="description">Friends</span> -->
                     </div>
                     <div>
-                      <span class="heading">10</span>
-                      <span class="description">Photos</span>
+                      <!-- <span class="heading">10</span>
+                      <span class="description">Photos</span> -->
                     </div>
                     <div>
-                      <span class="heading">89</span>
-                      <span class="description">Comments</span>
+                      <!-- <span class="heading">89</span>
+                      <span class="description">Comments</span> -->
                     </div>
                   </div>
                 </div>
               </div>
               <div class="text-center">
                 <h3>
-                  Jessica Jones<span class="font-weight-light">, 27</span>
+                  {{forms.user.profile.firstname}} {{forms.user.profile.lastname}}
                 </h3>
                 <div class="h5 font-weight-300">
-                  <i class="ni location_pin mr-2"></i>Bucharest, Romania
+                  <i class="ni location_pin mr-2"></i>{{forms.user.profile.address}} 
                 </div>
-                <div class="h5 mt-4">
+                <!-- <div class="h5 mt-4">
                   <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
                 </div>
                 <div>
@@ -68,7 +69,7 @@
                 </div>
                 <hr class="my-4" />
                 <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p>
-                <a href="#">Show more</a>
+                <a href="#">Show more</a> -->
               </div>
             </div>
           </div>
@@ -117,11 +118,18 @@
                         <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" v-model="forms.user.profile.lastname">
                       </div>
                     </div>
+
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-last-name">Contraseña</label>
+                        <input type="password" id="input-last-name" class="form-control form-control-alternative" placeholder="******" v-model="forms.user.password">
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <hr class="my-4" />
                 <!-- Address -->
-                <h6 class="heading-small text-muted mb-4">Contact information</h6>
+                <h6 class="heading-small text-muted mb-4">Direccion</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-md-12">
@@ -171,33 +179,145 @@
 
 
       <usersHistoryWidget  style="margin-top:50px;margin-bottom:50px" :user="$route.params.id" />
-      <!-- Footer -->
-      <footer class="footer">
-        <div class="row align-items-center justify-content-xl-between">
-          <div class="col-xl-6">
-            <div class="copyright text-center text-xl-left text-muted">
-              &copy; 2018 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Creative Tim</a>
-            </div>
-          </div>
-          <div class="col-xl-6">
-            <ul class="nav nav-footer justify-content-center justify-content-xl-end">
-              <li class="nav-item">
-                <a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
-              </li>
-              <li class="nav-item">
-                <a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About Us</a>
-              </li>
-              <li class="nav-item">
-                <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
-              </li>
-              <li class="nav-item">
-                <a href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md" class="nav-link" target="_blank">MIT License</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </footer>
+       
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="editBalance" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Editar balance</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+
+
+
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Detalles</th>
+                <th scope="col">Balance</th>
+                <!-- <th scope="col" v-if="editBalance.balance !== 0"><b>Nuevo balance</b></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <a href="#" class="avatar rounded-circle mr-3">
+                      <img alt="Image placeholder"
+                        :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + editBalance.user.username">
+                    </a>
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{ editBalance.user.username }}</span>
+                    </div>
+                  </div>
+                </th>
+                <td>
+                  {{ editBalance.user.balance }}
+
+                  <span class="text-success" v-if="editBalance.type == 'add'">+ {{ editBalance.balance }}</span>
+
+                  <span class="text-danger" v-if="editBalance.type == 'subtract'">- {{ editBalance.balance }}</span>
+
+                </td>
+
+                <!-- <td v-if="editBalance.balance !== 0">
+                  <span class="text-info" v-if="editBalance.type == 'add'">{{ parseFloat(editBalance.balance) +
+                      parseFloat(editBalance.user.balance)
+                  }}</span>
+                  <span class="text-info" v-if="editBalance.type == 'subtract'">{{ parseFloat(editBalance.user.balance)
+                      - parseFloat(editBalance.balance)
+                  }}</span>
+
+                </td> -->
+
+
+
+              </tr>
+            </tbody>
+          </table>
+
+
+
+
+          <div class="col-12">
+            <label class="form-control-label" style="display:block">Tipo de operacion</label>
+            <el-radio-group v-model="editBalance.type">
+              <el-radio label="add" size="large" border>Agregar</el-radio>
+              <el-radio label="subtract" size="large" border>Restar</el-radio>
+            </el-radio-group>
+          </div>
+
+          <el-divider border-style="dashed" />
+          <div class="col-12">
+            <label class="form-control-label" style="display:block">Monto</label>
+            <el-radio-group v-model="editBalance.balance">
+              <el-radio label="50" size="large" border>50</el-radio>
+              <el-radio label="100" size="large" border>100</el-radio>
+              <el-radio label="150" size="large" border>150</el-radio>
+              <el-radio label="250" size="large" border>250</el-radio>
+              <el-radio label="350" size="large" border>350</el-radio>
+              <el-radio label="450" size="large" border>450</el-radio>
+              <el-radio label="1000" size="large" border>1000</el-radio>
+            </el-radio-group>
+          </div>
+
+
+          <el-divider border-style="dashed" />
+
+          <div class="col-12">
+            <label class="form-control-label" style="display:block">O puedes ingresar un monto</label>
+            <el-input-number v-model="editBalance.balance" :min="1" :max="15000" controls-position="right" size="large"
+              @change="handleChange" style="width:100%;" />
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" @click.prevent="saveBalance()">Editar balance</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ComponentDialogBalanceUser  ref="editBalanceUserDialog" @change="init()" />
+
 </template>
 
 
@@ -211,11 +331,12 @@ import { ElNotification } from 'element-plus'
 
 import usersHistoryWidget from '@/components/game-history-user-widget.vue';
 import usersActivityBalance from '@/components/activity-balance-user-widget.vue';
- 
+import ComponentDialogBalanceUser from '@/components/users/editBalanceComponent.vue';
 export default {
   components : {
     usersHistoryWidget,
-    usersActivityBalance
+    usersActivityBalance,
+    ComponentDialogBalanceUser
   },
   data() {
     return {
@@ -233,6 +354,7 @@ export default {
         brands: 0,
       },
       loading: {
+        buttonBalance : false,
         activity: true,
       },
       editBalance: {
@@ -275,37 +397,22 @@ export default {
     };
   },
   created() { 
-    sdk.users.get(this.$route.params.id).then(response => {
+    this.init()
+  },
+  methods: {
+    editBalanceModal() {
+      this.loading.buttonBalance = true
+      this.$refs.editBalanceUserDialog.openDialog(this.forms.user,() => { 
+        this.loading.buttonBalance = false
+      })  
+    },
+  
+    init() {
+      sdk.users.get(this.$route.params.id).then(response => {
       // alert(JSON.stringify(response));
       this.forms.user = response[0];
     })
-  },
-  methods: {
-
-    // submitLogin() {
-    //   sdk.users.login(this.login.email, this.login.password).then(data => {
-    //     if (data.error) {
-    //       ElNotification({
-    //         title: 'Iniciar sesion',
-    //         message: "Contraseña o E-Mail erroneo.",
-    //         position: 'bottom-right',
-    //         duration: 0,
-    //       })
-    //       localStorage.setItem("auth", false);
-    //       return;
-    //     }
-    //     localStorage.setItem("auth", data.authToken);
-    //     ElNotification({
-    //       title: 'Iniciar sesion',
-    //       message: "Gracias por iniciar sesion.",
-    //       position: 'bottom-right',
-    //       duration: 0,
-    //     })
-    //     setTimeout(() => {
-    //       window.location.href = '/jugadores';
-    //     }, 1500)
-    //   })
-    // }
+    }
   },
 };
 

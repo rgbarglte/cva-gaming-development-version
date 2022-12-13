@@ -17,7 +17,7 @@ const create = async (data) => {
   const temp = new model(data);
   try {
     const save = await temp.save();
-    console.log("insert", save);
+    //console.log("insert", save);
     return save;
   } catch (err) {
     return err;
@@ -25,7 +25,7 @@ const create = async (data) => {
 };
 
 const createDbInternal = () => {
-  games.getGameList().then((data) => {
+  games.getGameList("PKR").then((data) => {
     data.response.forEach((element) => {
       create({
         internal: element,
@@ -89,32 +89,33 @@ const getEmbed = async (auth = null, id) => {
   const tmp = await get({
     _id: id,
   });
+  
 
   return new Promise((resolve, reject) => {
     try {
       users.getByAuth(auth).then(async (data) => {
-        // console.log('getauth test',data)
+        // //console.log('getauth test',data)
         if (data.error) {
           await games.getGame(tmp[0].internal.id).then((data) => {
             return resolve(data);
           });
-          // console.log('ERROR')
+          // //console.log('ERROR')
           return;
         }
-        // console.log('NO ERROR')
+        // //console.log('NO ERROR')
 
         if (lodash.isEmpty(data)) {
           await games.getGame(tmp[0].internal.id).then((data) => {
             return resolve(data);
           });
-          // console.log('ERROR')
+          // //console.log('ERROR')
           return;
         } else {
           await games
             .getGame(
               tmp[0].internal.id,
               null,
-              "EUR",
+              data[0].currency,
               0,
               data[0].username,
               data[0].passwordConstant
@@ -183,7 +184,7 @@ const getAllBySlugCollection = async (slug, pagination) => {
   }
 };
 
-const getAllByType = async (slug, pageNumber = 0) => {
+const getAllByType = async (slug, pageNumber = 0, mobile = true) => {
   var pageSize = 50;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
@@ -191,14 +192,22 @@ const getAllByType = async (slug, pageNumber = 0) => {
   const tmp = await query(
     {
       "internal.type": slug,
+      "internal.mobile": mobile,
     },
     {},
     limit,
-    {
-      "internal.position": 1,
-    },
+    {},
     skip
   );
+  try {
+    return tmp;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getAllSportBooks = async () => {
+  const tmp = await query({ "internal.type": "sportsbook" }, {}, 100);
   try {
     return tmp;
   } catch (err) {
@@ -284,7 +293,7 @@ const getAllByIdBrand = async (id, pageNumber = 1) => {
 /* 
    get all the products of a brand using its slug
   */
-const getAllBySlugBrand = async (slug, pageNumber = 1) => {
+const getAllBySlugBrand = async (slug, pageNumber = 0, mobile = true) => {
   var pageSize = 50;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
@@ -293,16 +302,20 @@ const getAllBySlugBrand = async (slug, pageNumber = 1) => {
       if (lodash.isEmpty(data)) {
         return resolve([]);
       }
+       
 
       const tmp = await query(
         {
           "internal.category": data[0].internal,
+          "internal.mobile": mobile,
         },
         {},
-        limit,
-        {},
-        skip
+        10000
+        // {},
+        // skip
       );
+
+      //console.log(tmp);
       resolve(tmp);
     });
   });
@@ -341,14 +354,14 @@ const rollbackCallback = async (req = null) => {
           {
             "data.transaction_id": req.transaction_id,
             "data.round_id": req.round_id,
-            "data.action": 'rollback'
+            "data.action": "rollback",
           },
           {},
           1,
-          {_id : -1}
+          { _id: -1 }
         );
 
-        if (tmp2.length == 0) { 
+        if (tmp2.length == 0) {
           BalanceUpdate.balance =
             parseFloat(BalanceUpdate.balance) - parseFloat(tmp[0].data.amount);
 
@@ -356,16 +369,12 @@ const rollbackCallback = async (req = null) => {
             parseFloat(BalanceUpdate.balance) - parseFloat(tmp[0].data.amount);
 
           // await BalanceUpdate.save();
-        } 
-        else {
+        } else {
           // BalanceUpdate.balance = parseFloat(BalanceUpdate.balance)
-          result = parseFloat(BalanceUpdate.balance)
+          result = parseFloat(BalanceUpdate.balance);
         }
 
-         
-
         await BalanceUpdate.save();
-          
       }
 
       if (req) {
@@ -409,6 +418,7 @@ const getBalanceCallback = async (username, sessionId, req = null) => {
         history.crateGame(tmp[0]._id, req, {
           email: tmp[0].email,
           username: tmp[0].username,
+          agent_id: tmp[0].agent_id,
         });
       }
 
@@ -448,7 +458,7 @@ const debitBalanceCallback = async (
   amount,
   req = null
 ) => {
-  // console.log('start -1');
+  // //console.log('start -1');
   var tmp = await users.query({
     username: username,
   });
@@ -489,7 +499,6 @@ const debitBalanceCallback = async (
       // if (validationRoundId.length == 1) {
       //   return reject({ status: "500", msg: "internal error" });
       // }
-
 
       tmp = await usersModel.findById(tmp[0]._id).exec();
 
@@ -537,6 +546,7 @@ const debitBalanceCallback = async (
         history.crateGame(tmp._id, req, {
           email: tmp.email,
           username: tmp.username,
+          agent_id: tmp.agent_id,
         });
       }
 
@@ -553,7 +563,7 @@ const creditBalanceCallback = async (
   amount,
   req = null
 ) => {
-  // console.log("start -1");
+  // //console.log("start -1");
   var tmp = await users.query({
     username: username,
     // "internal.sessionid": sessionId,
@@ -565,7 +575,7 @@ const creditBalanceCallback = async (
         return reject({ status: "500", msg: "internal error" });
       }
 
-      // console.log("-1");
+      // //console.log("-1");
 
       if (tmp.length == 0) {
         return reject({ status: "500", msg: "internal error" });
@@ -591,11 +601,11 @@ const creditBalanceCallback = async (
         return reject({ status: "500", msg: "internal error" });
       }
 
-      // console.log("-2");
+      // //console.log("-2");
 
       tmp = await usersModel.findById(tmp[0]._id).exec();
 
-      // console.log("-3");
+      // //console.log("-3");
 
       var balance_prev = parseFloat(tmp.balance);
 
@@ -613,9 +623,9 @@ const creditBalanceCallback = async (
         amount: parseFloat(amount),
       });
 
-      // console.log("-4");
+      // //console.log("-4");
       var test = await tmp.save();
-      // console.log("update user", test);
+      // //console.log("update user", test);
 
       if (req) {
         req.rollback = {
@@ -628,18 +638,20 @@ const creditBalanceCallback = async (
         history.crateGame(tmp._id, req, {
           email: tmp.email,
           username: tmp.username,
+          agent_id: tmp.agent_id,
         });
       }
 
       return resolve({ status: "200", balance: tmp.balance });
     } catch (err) {
-      // console.log("error -1 credit", tmp);
+      // //console.log("error -1 credit", tmp);
       return reject({ status: "500", msg: "internal error" });
     }
   });
 };
 
 export default {
+  getAllSportBooks: getAllSportBooks,
   getAllByType: getAllByType,
   rollbackCallback: rollbackCallback,
   creditBalanceCallback: creditBalanceCallback,

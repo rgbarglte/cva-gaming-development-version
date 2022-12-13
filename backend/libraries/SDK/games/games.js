@@ -30,7 +30,7 @@ const getGameDemo = async (
 const getGame = async (
   id_game,
   lang = "en",
-  currency = "EUR",
+  currency = "PKR",
   play_for_fun = 1,
   username = null,
   password = null

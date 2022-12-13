@@ -47,20 +47,26 @@ router.post("/get/all/by/brand", async (req, res) => {
 });
 
 router.post("/get/all/by/brand/slug", async (req, res) => {
-  games.getAllBySlugBrand(req.body.slug).then(data => {
+  const mobile = req.body.mobile ? req.body.mobile : true;
+  const page = req.body.page ? req.body.page : 1;
+  games.getAllBySlugBrand(req.body.slug,page,mobile).then(data => {
     res.json(data);
-  })
-  
+  }) 
 });
 
-
+ 
 router.post("/get/all/by/type", async (req, res) => {
- 
-  res.json(await games.getAllByType(req.body.slug,req.body.page));
-
+  const mobile = req.body.mobile ? req.body.mobile : true;
+  const page = req.body.page ? req.body.page : 1;
+  res.json(await games.getAllByType(req.body.slug,page,mobile));
 });
  
 
+router.post("/get/all/sportsbook", async (req, res) => {
+  res.json(await games.getAllSportBooks());
+});
+ 
+ 
 export default {
     endpoint : '/api/games',
     router : router

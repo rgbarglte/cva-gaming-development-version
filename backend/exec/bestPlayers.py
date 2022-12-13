@@ -12,7 +12,7 @@ DateStart = sys.argv[2]
 DateEnd = object( sys.argv[3])
 
 
-uri = "mongodb://app:43119739Ramiro@75.102.23.162:27017/?authMechanism=DEFAULT"
+uri = "mongodb://cva:43119739@127.0.0.1:27017/?authMechanism=DEFAULT"
 client = MongoClient(uri)
 
 # Access database object

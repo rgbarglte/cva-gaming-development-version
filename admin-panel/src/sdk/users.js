@@ -168,5 +168,28 @@ export default {
     });
   },
 
+  deleteUser: (id) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/delete", {
+          id: id,
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  edit: (id,data) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("users/edit", {
+          id: id,
+          data : data
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
 
 };

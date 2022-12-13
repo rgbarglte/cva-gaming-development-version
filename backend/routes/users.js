@@ -69,6 +69,25 @@ router.post("/login/admin", async (req, res) => {
     });
 });
 
+router.post("/login/agent", async (req, res) => {
+  console.log("endpoint login agent", req.body);
+  users
+    .loginAgent(
+      {
+        email: req.body.email,
+        password: req.body.password,
+      },
+      req
+    )
+    .then((data) => { 
+      console.log(data)
+      res.send(data);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+});
+
 router.post("/create", async (req, res) => {
   users
     .createBack(req.body)
@@ -81,7 +100,9 @@ router.post("/create", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  res.json(await users.getAll(req.body.page));
+  users.getAll(req.body.page,req.body.auth).then(data => {
+    res.json(data);
+  }) 
 });
 
 router.post("/get", async (req, res) => {
@@ -125,7 +146,7 @@ router.post("/get/all/by/brand/slug", async (req, res) => {
 router.post("/balance/subtract", async (req, res) => {
   res.send(
     await users.balanceSubtract(
-      req.body.token,
+      req.body.auth,
       req.body.target,
       req.body.balance,
       req
@@ -136,7 +157,7 @@ router.post("/balance/subtract", async (req, res) => {
 router.post("/balance/add", async (req, res) => {
   res.send(
     await users.balanceAdd(
-      req.body.token,
+      req.body.auth,
       req.body.target,
       req.body.balance,
       req
@@ -171,8 +192,19 @@ router.post("/games/history", async (req, res) => {
 router.post("/best/games", async (req, res) => {
   res.send(await users.getBestPlayers(req.body.date));
 });
- 
 
+
+
+router.post("/delete", async (req, res) => {
+  res.send(await users.deleteUser(req.body.id));
+});
+
+
+router.post("/edit", async (req, res) => {
+  res.send(await users.editUser(req.body.id,req.body.data));
+});
+ 
+ 
 export default {
   endpoint: "/api/users",
   router: router,

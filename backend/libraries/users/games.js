@@ -18,8 +18,7 @@ const getBestPlayers = (dataStart, dataEnd) => {
         options,
         function (err, results) {
           if (err) {
-            console.log("error spawn");
-            throw err;
+            return resolve({error : true , err : err}); 
           }
           return resolve(results);
         }

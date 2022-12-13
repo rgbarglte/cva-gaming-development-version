@@ -121,8 +121,7 @@ export default {
     created() { 
         sdk.platform.getDetails({
             date: this.startDate
-        }).then(data => {
-            console.log(data)
+        }).then(data => { 
             this.data = data[0];
             this.loadingCards = false;
         })

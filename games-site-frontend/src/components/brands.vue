@@ -13,13 +13,15 @@
 
                             <a v-for="item in 30" v-if="loading.brands" href="" @click.prevent=""
                                 class="scrollbar-demo-item"
-                                style="heigth:25px;background: rgba(255, 255, 255, 0.03);border-radius: 5px;    height: 35px !important">
+                                style="heigth:25px;background: rgba(255, 255, 255, 0.05);border-radius: 5px;    height: 35px !important">
 
                             </a>
 
-                            <a v-for="item in brands" v-if="loading.brands == false" :href="'/brand/'+item.slug"
+                            <a v-for="item in brands" v-if="loading.brands == false" :href="'/brand/' + item.slug"
                                 class="scrollbar-demo-item">
-                                {{item.name}}
+                                <img :src="imageCdn + 'brands/' + item.thumb"  class="img-fluid"
+                                    style="height: 35px;" v-if="item.thumb" /> 
+                                    <span v-if="!item.thumb">{{ item.name }}</span>
                             </a>
                         </div>
                     </el-scrollbar>
@@ -88,7 +90,7 @@
                             <img :src="item.internal.image" class="img-fluid"
                                 style="height: 50px;width:50px;margin-right: 10px;" />
 
-                            {{item.internal.name}}
+                            {{ item.internal.name }}
                         </a>
 
                     </el-scrollbar>
@@ -106,7 +108,7 @@
 
 
 <style scoped>
-@media (max-width: 600px) {
+@media (max-width: 800px) {
     .hide-mobil {
         display: none !important;
     }
@@ -121,7 +123,32 @@
         right: 0 !important;
         z-index: 2000 !important;
     }
- 
+
+    .scrollbar-demo-item {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        min-width: 40px;
+        max-width: 200px;
+        height: 50px;
+        margin: 10px;
+        text-align: center;
+        border-radius: 4px;
+        background: transparent;
+        color: var(--el-color-danger);
+        color: white;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 13px;
+        line-height: 16px;
+    }
+
+    .container-fluid {
+        padding: 0;
+        margin: 0;
+    }
 }
 
 .hide-desktop {
@@ -146,6 +173,7 @@ export default {
                 brands: true,
             },
             brands: [],
+            imageCdn : sdk.settings.imageCdn
         };
     },
     created() {

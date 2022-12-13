@@ -29,60 +29,8 @@
                     <typesComponent />
                 </div>
             </div>
-            <div class="col-md-10">
-                <div class="col-md-12" style="padding:4rem !important">
-
-
-                    <div class="row" v-if="loading.games == true">
-
-
-<div class="col-md-2" style="    padding: 5px;
-margin-bottom: 10px;" v-for="item in 42">
-    <a class="col-12" style="     height: 150px;
-background: rgb(19, 30, 44);
-width: 100%;
-border-radius: 5px;
-width: 100% !important;
-display: block;
-animation-name: example;
-animation-duration: 4s;">
-
-    </a>
-</div>
-
-</div>
-
-
-
-
-
-
-<div class="row" v-if="loading.games == false">
-                            <div class="col-12" style="margin-bottom:30px;">
-                                <h4 style="color:white;">{{$route.params.slugBrand}}</h4>
-                            </div>
-
-                            <div class="col-md-2" style="padding:5px;margin-bottom:10px" v-for="item in games">
-                                <a :href="'/game/' + item.internal.category + '/' + item._id" class="col-12"
-                                    style="padding:0;">
-                                    <img :src="item.internal.image" class="img-fluid" />
-                                </a>
-                            </div>
-
-                            <div class="col-12" style="margin-bottom:30px;margin-top:60px;" >
-                            
-                                 
-                            <el-button class="btn btn-primary col-12" style="    background: #060f1b;
-color: white;
-border: 1px solid #091525;
-padding: 20px;
-box-shadow: 0 0 50px #06101c;" :loading="loading.nextpage" @click.prevent="nexPage()"> Cargar mas resultados</el-button>
-                        </div>
-
-
-
-                        </div>
-                    </div>
+            <div class="col-md-10" style="background: #0c1014 !important;"> 
+                <gridGames :games="games" :brand="$route.params.slugBrand" :brandInfo="true"  />
                 </div>
             </div>
         </div>
@@ -97,12 +45,14 @@ import sdk from '@/assets/sdk/bundle.js';
 import typesComponent from '@/components/types.vue';
 import brandsComponent from '@/components/brands.vue';
 import carrouselComponent from '@/components/carrousel.vue';
+import gridGames from '@/components/grid-games.vue';
 
 export default {
     components: {
         typesComponent,
         brandsComponent,
-        carrouselComponent
+        carrouselComponent,
+        gridGames
     },
     data() {
         return {

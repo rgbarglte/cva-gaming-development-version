@@ -4,7 +4,7 @@ export default {
   getAll: (page = 1) => {
     return new Promise((resolve, reject) => {
       client
-        .POST("brands", {
+        .POST("brands/frontend", {
           page: page,
         })
         .then((data) => {
@@ -12,7 +12,7 @@ export default {
         });
     });
   },
-
+  
   getAllBySlug: (slug, page = 1) => {
     return new Promise((resolve, reject) => {
       client
@@ -36,4 +36,18 @@ export default {
         });
     });
   },
+
+  getInfoBySlug: (slug) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("brands/get/by/slug", { 
+          slug: slug,
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+ 
+   
 };

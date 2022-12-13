@@ -11,7 +11,8 @@ export default mongoose.model(
       name : { type : String , default : null , required : true},
       slug : { type : String , default : null , required : true},
       internal: { type: Object, required: true}, 
-      createDate : { type : String ,  default : new Date().toLocaleDateString("en-US")}
+      createDate : { type : String ,  default : new Date().toLocaleDateString("en-US")},
+      thumb : { type : String , default : null , required : false},
 
     },
     { timestamps: true }

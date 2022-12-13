@@ -75,6 +75,7 @@
                <thead class="thead-light">
                  <tr>
                    <th scope="col">Detalles</th> 
+                   <th scope="col">Realizado por</th>  
                    <th scope="col">Tipo</th>  
                    <th scope="col">Carga / Descarga</th>
                    <th scope="col">Balance antiguo</th>
@@ -99,7 +100,18 @@
                     </div>
                   </th>
 
-                  {{item.balance}}
+                  <th scope="row" style="opacity:0.6">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar rounded-circle mr-3">
+                        <img alt="Image placeholder"
+                          :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.data.owner.username">
+                      </a>
+                      <div class="media-body">
+                        <span class="mb-0 text-sm">{{item.data.owner.username}}</span>
+                      </div>
+                    </div>
+                  </th>
+
 
                   
                    <td>
@@ -109,7 +121,7 @@
                     
                    <td>
                     <span class="badge badge-dot mr-4" v-if="item.data.ref == 'subtract'">
-                       <i class="bg-danger"></i>  {{item.data.balance.target}}
+                       <i class="bg-danger"></i>  {{convert_positive(item.data.balance.target)}}
                      </span>
 
                      <span class="badge badge-dot mr-4" v-if="item.data.ref == 'add'">
@@ -124,7 +136,7 @@
                    
                    <td>
                     <span class="badge badge-dot mr-4">
-                       <i class="bg-info"></i>  {{item.data.balance.new}}
+                       <i class="bg-info"></i>  {{convert_positive(item.data.balance.new)}}
                      </span>
                      </td>
 
@@ -169,8 +181,8 @@
     background
     layout="prev, pager, next"
     :total="pagination.totalPages"
-    :default-page-size="30"
-    :page-size="30"
+    default-page-size="3"
+    page-size="30"
     class="mt-4"
     @current-change="nextPage"
   />
@@ -333,6 +345,16 @@
         }
     },
     methods: {
+     convert_positive(a) {
+        // Check the number is negative
+        if (a < 0) {
+            // Multiply number with -1
+            // to make it positive
+            a = a * -1;
+        }
+        // Return the positive number
+        return a;
+    },
       nextPage(pages) {
        this.pagination.activity = pages - 1;
        this.loadActivity();

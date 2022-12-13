@@ -15,6 +15,20 @@ import Games from "./users/games.js";
 import HistoryGames from "./users/historyGames.js";
 import lodash from "lodash";
 
+import modelHistory from "./../models/history.js";
+import modelActivity from "./../models/activity.js";
+
+const deleteUser = async (id) => {
+  await modelHistory.deleteMany({ userid: id });
+
+  await modelActivity.deleteMany({ userid: id });
+
+  const tmpUpdate = await model.findById(id).exec();
+  tmpUpdate.active = false;
+  tmpUpdate.isDelete = true;
+  return await tmpUpdate.save();
+};
+
 const query = async (
   filters = {},
   fields = [],
@@ -53,8 +67,7 @@ const searchText = async (target) => {
   }
 };
 
-const create = async (data) => {
-  console.log("librarie users", data);
+const create = async (data) => { 
   return new Promise((resolve, reject) => {
     var passwordConstant = generator.generate({
       length: 12,
@@ -114,7 +127,7 @@ const createBack = async (data) => {
     });
 
     users
-      .createPlayer(data.username, passwordConstant, data.nickname, "EUR")
+      .createPlayer(data.username, passwordConstant, data.nickname, "PKR")
       .then(async (dataInternal) => {
         if (dataInternal.error == 1) {
           return reject(dataInternal);
@@ -129,6 +142,15 @@ const createBack = async (data) => {
             email: data.email,
             username: data.username,
           };
+
+          var agentId;
+
+          if(decoded.isAgent) {
+            agentId = decoded._id;
+          } else {
+            agentId = data.agent_id;
+          }
+          
 
           var serial = {
             isLogin: false,
@@ -149,20 +171,13 @@ const createBack = async (data) => {
             automatically_settle: data.automatically_settle,
             agent_data: data.agent_data,
             owner_id: decoded._id,
-            agent_id: data.agent_id,
+            agent_id: agentId,
             internal: dataInternal.response,
           };
           const temp = new model(serial);
 
           return resolve(await temp.save());
-
-          // try {
-          //   const save = await temp.save();
-          //   console.log("insert", save);
-          //   resolve(save);
-          // } catch (err) {
-          //   reject(err);
-          // }
+ 
         });
       });
   });
@@ -173,6 +188,8 @@ const login = async (data, req = null) => {
     query({
       username: data.email,
       password: data.password,
+      active: true,
+      isDelete: false,
     }).then((tmp) => {
       if (tmp.length == 0) {
         return resolve({
@@ -181,55 +198,57 @@ const login = async (data, req = null) => {
       }
       const socket = uuidv4();
 
-      const authTokenSettings = {
-        time: Date(),
-        email: tmp[0].email,
-        username: tmp[0].username,
-        _id: tmp[0]._id,
-        owner_id: tmp[0].owner_id,
-        agent_id: tmp[0].agent_id,
-        socket: socket,
-      };
+      query({
+        _id: tmp[0].agent_id,
+      }).then((userAgentData) => {
+        const authTokenSettings = {
+          time: Date(),
+          email: tmp[0].email,
+          username: tmp[0].username,
+          _id: tmp[0]._id,
+          owner_id: tmp[0].owner_id,
+          agent_id: tmp[0].agent_id,
+          socket: socket,
+          currency: userAgentData[0].currency,
+          brands: userAgentData[0].brands,
+          enabledAllBrands: userAgentData[0].enabledAllBrands,
+        };
 
-      users
-        .loginPlayer(tmp[0].username, tmp[0].passwordConstant)
-        .then(async (dataLogin) => {
-          if (dataLogin.error == 1) {
-            return resolve(dataLogin);
-          }
+        users
+          .loginPlayer(tmp[0].username, tmp[0].passwordConstant,userAgentData[0].currency)
+          .then(async (dataLogin) => {
+            if (dataLogin.error == 1) {
+              return resolve(dataLogin);
+            }
 
-          if (req) {
-            history.createLogin(tmp[0]._id, req, {
-              email: tmp[0].email,
-              username: tmp[0].username,
-            });
-          }
+            if (req) {
+              history.createLogin(tmp[0]._id, req, {
+                email: tmp[0].email,
+                username: tmp[0].username,
+                owner_id: tmp[0].owner_id,
+                agent_id: tmp[0].agent_id,
+              });
+            }
 
-          const tmpUpdate = await model.findById(tmp[0]._id).exec();
-          tmpUpdate.authToken = sign(authTokenSettings, settings.jwtSecret);
-          tmpUpdate.internal = dataLogin.response;
-          // tmpUpdate.balance = dataLogin.response.balance; //fix 0 balance
-          tmpUpdate.socket = socket;
-          console.log("login tmpUpdate", tmpUpdate);
-          return resolve(await tmpUpdate.save());
-        });
+            const tmpUpdate = await model.findById(tmp[0]._id).exec();
+            tmpUpdate.authToken = sign(authTokenSettings, settings.jwtSecret);
+            tmpUpdate.internal = dataLogin.response;
+            // tmpUpdate.balance = dataLogin.response.balance; //fix 0 balance
+            tmpUpdate.socket = socket;
+            console.log("login tmpUpdate", tmpUpdate);
+            return resolve(await tmpUpdate.save());
+          });
+      });
     });
   });
 };
 
 const loginAdmin = async (data, req = null) => {
-  console.log("🚀 ~ file: users.js ~ line 201 ~ loginAdmin ~ data", data);
-
   return new Promise((resolve, reject) => {
     query({
-      email: data.email,
-      password: data.password,
-      isAdmin: true,
+      username: data.email,
+      password: data.password, 
     }).then(async (tmp) => {
-      console.log(
-        "🚀 ~ file: users.js ~ line 210 ~ returnnewPromise ~ tmp",
-        tmp
-      );
       if (tmp.length == 0) {
         return resolve({
           error: true,
@@ -243,17 +262,10 @@ const loginAdmin = async (data, req = null) => {
         username: tmp[0].username,
         _id: tmp[0]._id,
         socket: socket,
+        isAdmin:tmp[0].isAdmin,
+        isAgent: tmp[0].isAgent,
       };
-      console.log(
-        "🚀 ~ file: users.js ~ line 225 ~ returnnewPromise ~ authTokenSettings",
-        authTokenSettings
-      );
-
       const tmpUpdate = await model.findById(tmp[0]._id).exec();
-      console.log(
-        "🚀 ~ file: users.js ~ line 228 ~ returnnewPromise ~ tmpUpdate",
-        tmpUpdate
-      );
 
       tmpUpdate.authToken = sign(authTokenSettings, settings.jwtSecret);
       tmpUpdate.socket = socket;
@@ -264,25 +276,83 @@ const loginAdmin = async (data, req = null) => {
   });
 };
 
-const getAll = async (pageNumber = 1) => {
+const loginAgent = async (data, req = null) => {
+  return new Promise((resolve, reject) => {
+    query({
+      username: data.email,
+      password: data.password,
+      isAdmin: false,
+      isAgent: true,
+      active: true,
+      isDelete: false,
+    }).then(async (tmp) => {
+      if (tmp.length == 0) {
+        return resolve({
+          error: true,
+        });
+      }
+      const socket = uuidv4();
+
+      const authTokenSettings = {
+        time: Date(),
+        email: tmp[0].email,
+        username: tmp[0].username,
+        _id: tmp[0]._id,
+        socket: socket,
+        isAgent: true,
+      };
+
+      const tmpUpdate = await model.findById(tmp[0]._id).exec();
+      tmpUpdate.authToken = sign(authTokenSettings, settings.jwtSecret);
+      tmpUpdate.socket = socket;
+      tmpUpdate.passwordConstant = tmpUpdate.password;
+      return resolve(await tmpUpdate.save());
+    });
+  });
+};
+
+const getAll = async (pageNumber = 1, auth = null) => {
   var pageSize = 50;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
+  var tmp = {};
+  return new Promise((resolve, reject) => {
+    if (auth) {
+      verify(auth, settings.jwtSecret, async function (err, decoded) {
+        if (err) {
+          resolve({ error: 1, msg: "Token no valid" });
+        }
 
-  const tmp = await query(
-    {},
-    {},
-    limit,
-    {
-      _id: 1,
-    },
-    skip
-  );
-  try {
-    return tmp;
-  } catch (err) {
-    return err;
-  }
+        if (decoded.isAdmin) {
+          query(
+            {},
+            {},
+            limit,
+            {
+              _id: 1,
+            },
+            skip
+          ).then((data) => resolve(data));
+        }
+
+        if (decoded.isAgent) {
+          query(
+            {
+              agent_id: decoded._id,
+              // isDelete: false,
+            },
+            {},
+            limit,
+            {
+              _id: 1,
+            },
+            skip
+          ).then((data) => resolve(data));
+        }
+        console.log("user getall decoded", decoded);
+      });
+    }
+  });
 };
 const get = async (id) => {
   const tmp = await query({
@@ -331,7 +401,7 @@ const getByAuth = async (auth = null) => {
       try {
         resolve(tmp);
       } catch (err) {
-        reject(err);
+        resolve(err);
       }
     });
   });
@@ -482,8 +552,22 @@ const getAllBySlugBrand = async (slug, pageNumber = 1) => {
   }
 };
 
-const balanceAdd = (owner, userTarget, balance, req) => {
+const balanceAdd = (auth = null, userTarget, balance, req) => {
+  var ownerData;
   return new Promise(async (resolve, reject) => {
+    verify(auth, settings.jwtSecret, async function (err, decoded) {
+      if (err) {
+        resolve({ error: 1, msg: "Token no valid" });
+      }
+      ownerData = {
+        _id: decoded._id,
+        email: decoded.email,
+        username: decoded.username, 
+        isAgent: decoded.isAgent,
+        isAdmin: decoded.isAdmin,
+      };
+     
+
     const tmpUpdate = await model.findById(userTarget).exec();
     tmpUpdate.balance = parseFloat(tmpUpdate.balance) + parseFloat(balance);
 
@@ -492,12 +576,7 @@ const balanceAdd = (owner, userTarget, balance, req) => {
       tmpUpdate._id,
       req,
       tmpUpdate,
-      {
-        userid: 123,
-        email: "raates@gmail.com",
-        firstname: "admin",
-        lastname: "general",
-      },
+      ownerData,
       "add",
       {
         target: parseFloat(balance),
@@ -505,14 +584,41 @@ const balanceAdd = (owner, userTarget, balance, req) => {
         new: parseFloat(balance) + parseFloat(tmpUpdate.balance),
       }
     );
+
+    
+    console.log('Test add' , tmpUpdate._id,
+    
+      ownerData,
+      "subtract",
+      {
+        target: parseFloat(balance),
+        old: parseFloat(tmpUpdate.balance),
+        new: parseFloat(balance) + parseFloat(tmpUpdate.balance),
+      })
     // ---------------------------
 
     return resolve(await tmpUpdate.save());
   });
+  });
 };
 
-const balanceSubtract = (owner, userTarget, balance, req) => {
+const balanceSubtract = (auth, userTarget, balance, req) => {
+  var ownerData;
   return new Promise(async (resolve, reject) => {
+    verify(auth, settings.jwtSecret, async function (err, decoded) {
+      if (err) {
+        resolve({ error: 1, msg: "Token no valid" });
+      }
+      ownerData = {
+        _id: decoded._id,
+        email: decoded.email,
+        username: decoded.username, 
+        isAgent: decoded.isAgent,
+        isAdmin: decoded.isAdmin,
+      };
+     
+      console.log('owner data', ownerData , decoded)
+
     const tmpUpdate = await model.findById(userTarget).exec();
     tmpUpdate.balance = parseFloat(tmpUpdate.balance) - parseFloat(balance);
 
@@ -521,12 +627,7 @@ const balanceSubtract = (owner, userTarget, balance, req) => {
       tmpUpdate._id,
       req,
       tmpUpdate,
-      {
-        userid: 123,
-        email: "raates@gmail.com",
-        firstname: "admin",
-        lastname: "general",
-      },
+      ownerData,
       "subtract",
       {
         target: parseFloat(balance),
@@ -534,9 +635,20 @@ const balanceSubtract = (owner, userTarget, balance, req) => {
         new: parseFloat(balance) - parseFloat(tmpUpdate.balance),
       }
     );
+
+    console.log('Test' , tmpUpdate._id,
+    
+      ownerData,
+      "subtract",
+      {
+        target: parseFloat(balance),
+        old: parseFloat(tmpUpdate.balance),
+        new: parseFloat(balance) - parseFloat(tmpUpdate.balance),
+      })
     // ---------------------------
 
     return resolve(await tmpUpdate.save());
+  });
   });
 };
 
@@ -577,7 +689,49 @@ const getBestPlayers = (date) => {
   });
 };
 
+const editUser = async (id, data) => {
+  const tmpUpdate = await model.findById(id).exec();
+  tmpUpdate.currency = data.currency;
+  tmpUpdate.email = data.email;
+  tmpUpdate.password = data.password;
+  tmpUpdate.username = data.username;
+  tmpUpdate.nickname = data.nickname;
+  tmpUpdate.balance = data.balance;
+  tmpUpdate.isAgent = data.isAgent;
+  tmpUpdate.automatically_settle = data.automatically_settle;
+  tmpUpdate.enabledAllBrands = data.enabledAllBrands;
+  tmpUpdate.brands = data.brands;
+  tmpUpdate.enabledAllGames = data.enabledAllGames;
+  tmpUpdate.games = data.games;
+
+
+  tmpUpdate.owner_id = data.owner_id;
+  tmpUpdate.agent_id = data.agent_id;
+
+  if (data.isAgent) {
+    tmpUpdate.agent_data = {
+      firstname: data.agent_data.firstname,
+      lastname: data.agent_data.lastname,
+      phone: data.agent_data.phone,
+      dni: data.agent_data.dni,
+    };
+  }
+  tmpUpdate.profile = {
+    firstname: data.profile.firstname,
+    lastname: data.profile.lastname,
+    address: data.profile.address,
+    city: data.profile.city,
+    country: data.profile.country,
+    zip: data.profile.zip,
+    about: data.profile.about,
+  };
+
+  return await tmpUpdate.save();
+};
+
 export default {
+  editUser:editUser,
+  deleteUser: deleteUser,
   getBestPlayers: getBestPlayers,
   getAllHistoryGameByUser: getAllHistoryGameByUser,
   getAllUsersDetailsByAgent: getAllUsersDetailsByAgent,
@@ -604,4 +758,5 @@ export default {
   getBySlug: getBySlug,
   query: query,
   loginAdmin: loginAdmin,
+  loginAgent: loginAgent,
 };

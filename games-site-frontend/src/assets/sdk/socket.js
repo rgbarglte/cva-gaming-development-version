@@ -3,6 +3,8 @@ import { io } from "socket.io-client";
 var  socket;
 
 
+import settings from "./settings";
+
 
 export default {
     getIo : () => {
@@ -10,7 +12,7 @@ export default {
     },
     connect : (auth) => {
         return new Promise(async (resolve, reject) => {
-          socket = io('https://cvagaming.com');
+          socket = io(settings.socketHost);
           socket.on('connect', () => { 
              console.log('Successfully connected!');  
              socket.emit('teste' , {

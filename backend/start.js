@@ -7,6 +7,11 @@ import platform from "./routes/platform.js";
 import types from "./routes/types.js";
 
 import GeneralChat from "./routes/general/chat.js";
+import GeneralChart from "./routes/general/chart.js";
+
+import GeneralPlatform from "./routes/general/platform.js";
+
+
 
 import express from "express";
 
@@ -42,13 +47,13 @@ app.use(
 import gamesLib from "./libraries/games.js";
 import socket from "./services/socket.js";
 
-var serverHttps;
+var serverHttps,serverHttp;
 
 app.get("/", function (req, res) {
   console.log("/", path.join(__dirname, "public") + "/index.html");
   res.sendFile(path.join(__dirname, "public") + "/index.html");
 });
-
+ 
 app.get("/web", function (req, res) {
   console.log("/we", path.join(__dirname, "public") + "/index.html");
   res.sendFile(path.join(__dirname, "public") + "/index.html");
@@ -66,6 +71,7 @@ app.use(express.static(path.join(__dirname, 'uploads')));
 // });
 
 app.get("/v2/bo/games/callback", async (req, res) => {
+  console.log(req.query.action)
   if (req.query.action == "rollback") {
     gamesLib
       .rollbackCallback(req.query)
@@ -148,12 +154,12 @@ app.get("/v2/bo/games/callback", async (req, res) => {
 });
 
 const start = () => {
-  app.all("*", function (req, res, next) {
-    if (!req.secure && req.get("x-forwarded-proto") !== "https") {
-      return res.redirect(`https://${req.get("host")}${req.url}`);
-    }
-    next();
-  });
+  // app.all("*", function (req, res, next) {
+  //   if (!req.secure && req.get("x-forwarded-proto") !== "https") {
+  //     return res.redirect(`https://${req.get("host")}${req.url}`);
+  //   }
+  //   next();
+  // });
 
   // Add Access Control Allow Origin headers
   app.use((req, res, next) => {
@@ -166,20 +172,23 @@ const start = () => {
   });
 
   app.use(history());
-  app.use(express.static(path.join(__dirname, "public")));
-  
+  app.use(express.static(path.join(__dirname, "public"))); 
   app.use(games.endpoint, games.router);
   app.use(brands.endpoint, brands.router);
   app.use(users.endpoint, users.router);
   app.use(historyRouter.endpoint, historyRouter.router);
   app.use(activity.endpoint, activity.router);
   app.use(types.endpoint, types.router);
-  app.use(platform.endpoint, platform.router);
+  // app.use(platform.endpoint, platform.router);
 
   // General endpoints
   app.use(GeneralChat.endpoint, GeneralChat.router);
+  app.use(GeneralChart.endpoint, GeneralChart.router);
 
-    serverHttps = createServer(
+
+  app.use(GeneralPlatform.endpoint, GeneralPlatform.router);
+   
+  /*  serverHttps = createServer(
     {
       key: readFileSync(
         "/etc/letsencrypt/live/cvagaming.com/privkey.pem",
@@ -192,11 +201,11 @@ const start = () => {
       ca: readFileSync("/etc/letsencrypt/live/cvagaming.com/chain.pem", "utf8"),
     },
     app
-  ).listen(443, () => console.log("HTTPS Server Started"));
+  ).listen(443, () => console.log("HTTPS Server Started")); */
   
-  createServerHttp(app).listen(999, () => console.log("HTTP Server Started"));
+  serverHttp = createServerHttp(app).listen(4000, () => console.log("HTTP Server Started : " + 4000));
 
-  socket.start(serverHttps).then((socket) => {
+  socket.start(serverHttp).then((socket) => {
     console.log("connected success");
   });
 

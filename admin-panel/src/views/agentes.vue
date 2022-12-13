@@ -80,23 +80,19 @@
               <tbody>
                 <tr v-for="item in filterAgents">
                   <th scope="row">
-                    
-     
+
+
                     <a :href="'/agentes/' + item._id" class="media align-items-center">
-                      <div  class="avatar rounded-circle mr-3">
+                      <div class="avatar rounded-circle mr-3">
                         <img alt="Image placeholder"
                           :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + item.username">
                       </div>
                       <div class="media-body">
-                        <el-tooltip
-        class="box-item"
-        effect="dark"
-        :content="'Ver jugadores del agente ' + item.username "
-        placement="bottom-start"
-      >
-      <span class="mb-0 text-sm">{{ item.username }}</span>
-      </el-tooltip>
-                         
+                        <el-tooltip class="box-item" effect="dark"
+                          :content="'Ver jugadores del agente ' + item.username" placement="bottom-start">
+                          <span class="mb-0 text-sm">{{ item.username }}</span>
+                        </el-tooltip>
+
                       </div>
                     </a>
                   </th>
@@ -104,257 +100,27 @@
                     {{ item.balance }}
                   </td>
                   <td>
-                    <button class="btn btn-primary btn-sm" @click="editBalanceModal(item)">+ / -</button>
-                    <!-- <button class="btn btn-outline-primary btn-sm">-</button> -->
+                    <el-button class="btn btn-primary btn-sm" @click="editBalanceModal(item)"
+                      :loading="loading.buttonBalance">+ / -</el-button>
                   </td>
                   <td>
                     {{ item.createdAt }}
                   </td>
-                   
+
                   <td>
-                    <a :href="'/jugadores/' + item._id" class="btn btn-primary btn-sm">Ver / Editar perfil</a>
+
+                    <el-button @click.prevent="editUserModal(item._id);" class="btn btn-primary btn-sm"
+                      :loading="loading.buttonEdit">Editar usuario</el-button>
+                    <a :href="'/jugadores/' + item._id" class="btn btn-primary btn-sm">Ver perfil</a>
                     <a :href="'/actividad/vivo/' + item._id" class="btn btn-primary btn-sm">Vista en vivo</a>
-                    <a :href="'/actividad/vivo/' + item._id" class="btn btn-primary btn-sm">Vista en vivo</a>
-                  </td> 
+                    <el-button class="btn btn-outline-danger btn-sm"
+                      @click.prevent="openDeleteDialog(item._id)">Eliminar</el-button>
+                  </td>
 
                 </tr>
               </tbody>
             </table>
           </div>
-          <!-- <div class="card-footer py-4">
-            <nav aria-label="...">
-              <ul class="pagination justify-content-end mb-0">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" tabindex="-1">
-                    <i class="fas fa-angle-left"></i>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li class="page-item active">
-                  <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">
-                    <i class="fas fa-angle-right"></i>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-  <!-- Modal -->
-  <div class="modal fade" id="newUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Nuevo agente</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-
-
-
-
-
-          <el-tabs v-model="activeTabNewForm" class="demo-tabs">
-            <el-tab-pane label="Usuario" name="Usuario" active>
-
-              <form class="form-row">
-                <div class="form-group col-6">
-                  <label class="form-control-label">E-Mail</label>
-                  <input type="email" class="form-control form-control-alternative" v-model="forms.user.email" />
-                </div>
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Nombre de usuario</label>
-                  <input type="text" class="form-control form-control-alternative" v-model="forms.user.username" />
-                </div>
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Apodo</label>
-                  <input type="text" class="form-control form-control-alternative" v-model="forms.user.nickname" />
-                </div>
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Contraseña</label>
-                  <input type="password" class="form-control form-control-alternative" v-model="forms.user.password" />
-                </div>
-
-                <div class="form-group col-12">
-                  <label class="form-control-label">Balance</label>
-                  <input type="number" class="form-control form-control-alternative" v-model="forms.user.balance"
-                    min="0" />
-                </div>
-
-
-                <!-- <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-bottom:20px">
-                  <label class="btn btn-secondary" v-bind:class="{ type_product_select: forms.user.isAgent == false }"
-                    @click="forms.user.isAgent = false">
-                    <input type="radio" name="options" id="sedan" autocomplete="off" />
-                    Jugador
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ type_product_select: forms.user.isAgent == true }"
-                    @click="forms.user.isAgent = true">
-                    <input type="radio" name="options" id="suv" autocomplete="off" />
-                    Agente
-                  </label>
-                </div> -->
-
-
-              </form>
-            </el-tab-pane>
-
-
-
-
-
-            <el-tab-pane label="Perfil publico" name="Perfil publico">
-
-              <form class="form-row">
-
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Nombre</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.profile.firstname" />
-                </div>
-
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Apellido</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.profile.lastname" />
-                </div>
-
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Telefono</label>
-                  <input type="text" class="form-control form-control-alternative" v-model="forms.user.profile.phone" />
-                </div>
-
-
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Direccion</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.profile.address" />
-                </div>
-
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Ciudad</label>
-                  <input type="text" class="form-control form-control-alternative" v-model="forms.user.profile.city" />
-                </div>
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Pais</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.profile.country" />
-                </div>
-
-
-                <div class="form-group col-6">
-                  <label class="form-control-label">Codigo postal</label>
-                  <input type="text" class="form-control form-control-alternative" v-model="forms.user.profile.zip" />
-                </div>
-
-
-
-                <div class="form-group col-12">
-                  <label class="form-control-label">Sobre el usuario</label>
-                  <input type="text" class="form-control form-control-alternative" v-model="forms.user.profile.about" />
-                </div>
-
-              </form>
-
-            </el-tab-pane>
-
-
-            <el-tab-pane label="Marcas" name="Marcas">
-              <div class="form-group col-12">
-                <div class="form-froup">
-                  <Toggle v-model="forms.user.enabledAllBrands" /> Todas las marcas de juegos disponibles
-                </div>
-
-                <div class="form-groupd" v-if="!forms.user.enabledAllBrands" style="margin-top:20px;">
-                  <el-select multiple v-model="forms.user.brands" placeholder="Selecciona las marcas disponibles"
-                    style="width: 100%" filterable>
-                    <el-option v-for="item in brands" :key="item" :label="item" :value="item" />
-                  </el-select>
-                </div>
-              </div>
-
-            </el-tab-pane>
-
-            <el-tab-pane label="Juegos" name="Juegos">
-              <div class="form-group col-12">
-                <div class="form-froup">
-                  <Toggle v-model="forms.user.enabledAllGames" disabled /> Todos los juegos disponibles
-                </div>
-              </div>
-
-
-
-            </el-tab-pane>
-
-
-
-            <el-tab-pane label="Perfil del agente" name="perfil agente" v-if="forms.user.isAgent">
-              <form class="form-row">
-                <div class="form-group col-12">
-                  <label class="form-control-label">Comisiones</label>
-                  <div class="form-froup">
-                    <Toggle v-model="forms.user.automatically_settle" /> Liquidar automaticamente
-                    <p v-if="!forms.user.automatically_settle" style="margin-top:5px;font-size:12px;"> Se liquidara :
-                      <b>Mensualmente</b>
-                    </p>
-                    <p v-if="forms.user.automatically_settle" style="margin-top:5px;font-size:12px;"> Se liquidara :
-                      <b>Anualmente</b>
-                    </p>
-                  </div>
-                </div>
-                <div class="form-group col-6">
-                  <label class="form-control-label">Nombre</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.agent_data.firstname" />
-                </div>
-                <div class="form-group col-6">
-                  <label class="form-control-label">Apellido</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.agent_data.lastname" />
-                </div>
-                <div class="form-group col-6">
-                  <label class="form-control-label">Telefono</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.agent_data.phone" />
-                </div>
-                <div class="form-group col-6">
-                  <label class="form-control-label">D.N.I</label>
-                  <input type="text" class="form-control form-control-alternative"
-                    v-model="forms.user.agent_data.dni" />
-                </div>
-              </form>
-            </el-tab-pane>
-          </el-tabs>
-
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" @click.prevent="saveUser()">Crear usuario</button>
         </div>
       </div>
     </div>
@@ -364,110 +130,9 @@
 
 
 
-
-  <!-- Modal -->
-  <div class="modal fade" id="editBalance" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Editar balance</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-
-
-
-
-          <table class="table align-items-center table-flush">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col">Detalles</th>
-                <th scope="col">Balance</th>
-                <!-- <th scope="col" v-if="editBalance.balance !== 0"><b>Nuevo balance</b></th>  -->
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">
-                  <div class="media align-items-center">
-                    <a href="#" class="avatar rounded-circle mr-3">
-                      <img alt="Image placeholder"
-                        :src="'https://ui-avatars.com/api/?background=5e72e4&color=fff&name=' + editBalance.user.username">
-                    </a>
-                    <div class="media-body">
-                      <span class="mb-0 text-sm">{{ editBalance.user.username }}</span>
-                    </div>
-                  </div>
-                </th>
-                <td>
-                  {{ editBalance.user.balance }}
-
-                  <span class="text-success" v-if="editBalance.type == 'add'">+ {{ editBalance.balance }}</span>
-
-                  <span class="text-danger" v-if="editBalance.type == 'subtract'">- {{ editBalance.balance }}</span>
-
-                </td>
-
-                <!-- <td v-if="editBalance.balance !== 0"> 
-                      <span class="text-info" v-if="editBalance.type == 'add'">{{parseFloat(editBalance.balance) + parseFloat(editBalance.user.balance)}}</span> 
-                      <span class="text-info" v-if="editBalance.type == 'subtract'">{{parseFloat(editBalance.user.balance ) - parseFloat(editBalance.balance)}}</span>
-  
-                    </td> -->
-
-
-
-              </tr>
-            </tbody>
-          </table>
-
-
-
-
-          <div class="col-12">
-            <label class="form-control-label" style="display:block">Tipo de operacion</label>
-            <el-radio-group v-model="editBalance.type">
-              <el-radio label="add" size="large" border>Agregar</el-radio>
-              <el-radio label="subtract" size="large" border>Restar</el-radio>
-            </el-radio-group>
-          </div>
-
-          <el-divider border-style="dashed" />
-          <div class="col-12">
-            <label class="form-control-label" style="display:block">Monto</label>
-            <el-radio-group v-model="editBalance.balance">
-              <el-radio label="50" size="large" border>50</el-radio>
-              <el-radio label="100" size="large" border>100</el-radio>
-              <el-radio label="150" size="large" border>150</el-radio>
-              <el-radio label="250" size="large" border>250</el-radio>
-              <el-radio label="350" size="large" border>350</el-radio>
-              <el-radio label="450" size="large" border>450</el-radio>
-              <el-radio label="1000" size="large" border>1000</el-radio>
-            </el-radio-group>
-          </div>
-
-
-          <el-divider border-style="dashed" />
-
-          <div class="col-12">
-            <label class="form-control-label" style="display:block">O puedes ingresar un monto</label>
-            <el-input-number v-model="editBalance.balance" :min="1" :max="15000" controls-position="right" size="large"
-              @change="handleChange" style="width:100%;" />
-          </div>
-
-
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" @click.prevent="saveBalance()">Editar balance</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
+  <ComponentDialogCreateAgent ref="createUserDialog" @change="loadUsers()" />
+  <ComponentDialogEditUser ref="editUserDialog" @change="loadUsers()" />
+  <ComponentDialogBalanceUser ref="editBalanceUserDialog" @change="loadUsers()" />
 
 </template>
   
@@ -476,8 +141,16 @@
   
 <script>
 import sdk from '@/sdk/bundle.js';
+import ComponentDialogCreateAgent from '@/components/users/createAgentComponent.vue';
+import ComponentDialogEditUser from '@/components/users/editUserComponent.vue';
+import ComponentDialogBalanceUser from '@/components/users/editBalanceComponent.vue';
 
 export default {
+  components: {
+    ComponentDialogEditUser,
+    ComponentDialogBalanceUser,
+    ComponentDialogCreateAgent
+  },
   data() {
     return {
       search: {
@@ -493,6 +166,8 @@ export default {
       },
       loading: {
         users: true,
+        buttonEdit: false,
+        buttonBalance: false,
       },
       editBalance: {
         type: 'add',
@@ -534,26 +209,32 @@ export default {
     };
   },
   computed: {
-        filterAgents() {
-            if (this.search.user) {
-                return this.users.filter((item) => {
-                    if (item._id === this.search.user) {
-                        return item;
-                    }
-                })
+    filterAgents() {
+      if (this.search.user) {
+        return this.users.filter((item) => {
+          if (item._id === this.search.user) {
+            return item;
+          }
+        })
 
 
-            } else {
-                return this.users;
-            }
+      } else {
+        return this.users;
+      }
 
-        }
-    },
+    }
+  },
   created() {
     this.loadUsers();
     this.loadBrands();
   },
   methods: {
+    editUserModal(id) {
+      this.loading.buttonEdit = true
+      this.$refs.editUserDialog.openDialog(id, () => {
+        this.loading.buttonEdit = false
+      })
+    },
     searchSubmit() {
       console.log(this.search)
     },
@@ -570,28 +251,7 @@ export default {
         this.brands = data;
       })
     },
-    saveUser() {
-      sdk.users.create(this.forms.user).then(data => {
-        if (data.error) {
-          return this.$toast.show(
-            data.message,
-            {
-              position: "bottom-right"
-            }
-          )
-        }
 
-        this.$toast.success(
-          "El usuario fue registrado correctamente",
-          {
-            position: "bottom-right"
-          }
-        )
-
-        $('#newUser').modal('hide')
-        this.loadUsers();
-      })
-    },
     saveBalance() {
       console.log(this.editBalance);
 
@@ -647,11 +307,13 @@ export default {
 
 
     newUserModal() {
-      $('#newUser').modal('show')
+      this.$refs.createUserDialog.openDialog()
     },
     editBalanceModal(user) {
-      this.editBalance.user = user;
-      $('#editBalance').modal('show')
+      this.loading.buttonBalance = true
+      this.$refs.editBalanceUserDialog.openDialog(user, () => {
+        this.loading.buttonBalance = false
+      })
     }
 
   },

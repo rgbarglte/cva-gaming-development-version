@@ -4,7 +4,7 @@ export default {
   getAll: (page = 0) => {
     return new Promise((resolve, reject) => {
       client
-        .POST("types", {
+        .POST("types/frontend", {
           page: page,
         })
         .then((data) => {

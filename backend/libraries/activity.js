@@ -1,5 +1,8 @@
 import model from "./../models/activity.js";
 import lodash from "lodash";
+import pkg from "jsonwebtoken";
+const { verify, sign } = pkg;
+import settings from "./../settings.js";
 
 const createLogin = async (userid, req, userdata = null) => {
   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
@@ -73,7 +76,7 @@ const query = async (
   }
 };
 
-const getAllLogin = async (pageNumber = 0, filter = {}) => {
+const getAllLogin = async (pageNumber = 0, filter = {} , auth = null) => {
   var pageSize = 30;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
@@ -119,13 +122,12 @@ const balanceTotalPages = () => {
   });
 };
 
-
 const balanceTotalPagesByUser = (user) => {
   return new Promise((resolve, reject) => {
     model.countDocuments(
       {
         type: "balance",
-        userid : user
+        userid: user,
       },
       function (err, count) {
         if (err) {
@@ -138,28 +140,55 @@ const balanceTotalPagesByUser = (user) => {
   });
 };
 
- 
-
-const getAllBalanceByUser = async (pageNumber = 0, filter = {} , user) => {
+const getAllBalanceByUser = async (
+  pageNumber = 0,
+  filter = {},
+  user,
+  auth = null
+) => {
   var pageSize = 30;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
-  var search = {
-    type: "balance",
-    userid : user
-  };
+  var search;
 
-  if (lodash.isArray(filter.date)) {
-    search.createDate = {
-      $gte: new Date(filter.date[0]).toLocaleDateString("en-US"),
-      $lt: new Date(filter.date[1]).toLocaleDateString("en-US"),
-    };
+  console.log("getAllBalanceByUser", [pageNumber, filter, user, auth]);
+
+  if (auth) {
+    verify(auth, settings.jwtSecret, async function (err, decoded) {
+      if (err) {
+        resolve({ error: 1, msg: "Token no valid" });
+      }
+
+      if (decoded.isAdmin) {
+          search = {
+          type: "balance",
+          userid: user,
+        };
+      }
+
+      if (decoded.isAgent) {
+          search = {
+          type: "balance",
+          userid: user,
+          "data.owner._id": decoded._id,
+        };
+      }
+    });
+
+    if (lodash.isArray(filter.date)) {
+      search.createDate = {
+        $gte: new Date(filter.date[0]).toLocaleDateString("en-US"),
+        $lt: new Date(filter.date[1]).toLocaleDateString("en-US"),
+      };
+    }
   }
- 
 
-  const tmp = await query(search, {}, limit, { _id : -1}, skip);
+  if (!auth) {
+    return { error: 1, msg: "Token no valid" };
+  }
 
-  console.log(search);
+  const tmp = await query(search, {}, limit, { _id: -1 }, skip);
+
   try {
     return tmp;
   } catch (err) {
@@ -167,14 +196,32 @@ const getAllBalanceByUser = async (pageNumber = 0, filter = {} , user) => {
   }
 };
 
-
-const getAllBalance = async (pageNumber = 0, filter = {}) => {
+const getAllBalance = async (pageNumber = 0, filter = {}, auth = null) => {
   var pageSize = 30;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
-  var search = {
-    type: "balance",
-  };
+  var search = {};
+
+  if (auth) {
+    verify(auth, settings.jwtSecret, async function (err, decoded) {
+      if (err) {
+        return { error: 1, msg: "Token no valid" };
+      }
+
+      if (decoded.isAdmin) {
+        search = {
+          type: "balance",
+        };
+      }
+
+      if (decoded.isAgent) {
+        search = {
+          type: "balance",
+          "data.owner._id": decoded._id,
+        };
+      }
+    });
+  }
 
   if (lodash.isArray(filter.date)) {
     search.createDate = {
@@ -202,8 +249,8 @@ const getAllBalance = async (pageNumber = 0, filter = {}) => {
   ) {
     search["data.ref"] = filter.type;
   }
-
-  const tmp = await query(search, {}, limit, { _id : -1}, skip);
+  console.log(search, {}, limit, { _id: -1 }, skip);
+  const tmp = await query(search, {}, limit, { _id: -1 }, skip);
 
   console.log(search);
   try {
@@ -214,11 +261,11 @@ const getAllBalance = async (pageNumber = 0, filter = {}) => {
 };
 
 export default {
-  balanceTotalPagesByUser : balanceTotalPagesByUser,
-  getAllBalanceByUser : getAllBalanceByUser,
+  balanceTotalPagesByUser: balanceTotalPagesByUser,
+  getAllBalanceByUser: getAllBalanceByUser,
   getAllLogin: getAllLogin,
   createLogin: createLogin,
   getAllBalance: getAllBalance,
   createBalanceUpdate: createBalanceUpdate,
-  balanceTotalPages : balanceTotalPages,
+  balanceTotalPages: balanceTotalPages,
 };

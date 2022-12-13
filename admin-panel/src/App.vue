@@ -28,7 +28,30 @@
 
 
 <style  >
+ .el-switch.is-checked .el-switch__core {
+    border-color: var(--el-switch-border-color,var(--el-switch-on-color));
+    background-color: var(--el-switch-on-color);
+    background: linear-gradient(87deg, #16ff91 0, #038959 100%);
+    border-color: #73e9c4;
+}
+ .btn-primary {
+    color: #fff;
+    background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
+    border-color: #5e72e4;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+ .el-date-editor.el-date-editor--daterange.el-input__wrapper.el-range-editor.el-tooltip__trigger.el-tooltip__trigger {
+    width: 100%;
+}
+@media (max-width: 900px) {
  
+  .el-date-editor.el-date-editor--daterange.el-input__wrapper.el-range-editor.el-tooltip__trigger.el-tooltip__trigger {
+   margin-top: 10px;
+}
+  #navbar-main {
+    display:none !important
+  }
+}
 
 html, body{min-height:100%;}
 body{height:100vh;}

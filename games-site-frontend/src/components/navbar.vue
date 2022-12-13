@@ -4,7 +4,7 @@
 
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark hide-desktop show-mobil"
-        style="background: linear-gradient(183deg, #050c14, transparent) !important">
+        style="background: black !important;margin-top: -2px;">
         <div class="row" style="    width: 100% !important;
     margin: 0;
     padding: 0 !important;">
@@ -23,7 +23,8 @@
     color: yellow;
 
 ">
-                {{ loginData.balance }} <span class="material-symbols-outlined" style="    margin-left: 8px;">
+                {{ loginData.balance }} <span class="material-symbols-outlined" style="    margin-left: 8px;"
+                    v-if="login">
                     monetization_on
                 </span>
             </div>
@@ -32,17 +33,13 @@
 
 
 
-            <div class="col-4" style="    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    align-items: center;">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
-                    aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
+            <div class="col-4" data-v-688b5e20=""
+                style="text-align: center;display: flex;flex-direction: column;place-content: center;align-items: flex-end;align-content: flex-end;padding: 0;">
+                <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarText"
+                    aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" data-v-688b5e20=""
+                    style="
+    border: none;
+"><span class="navbar-toggler-icon" data-v-688b5e20=""></span></button></div>
         </div>
 
 
@@ -61,15 +58,6 @@ font-family: 'Inter', sans-serif;
 text-transform:uppercase;
                     ">Inicio</a>
                 </li>
-                <li class="nav-item active" v-for="item in 5">
-                    <a class="nav-link" href="#" style="
-                    font-weight: 700;
-    font-size: 13px;
-font-family: 'Inter', sans-serif;
-text-transform:uppercase;
-                    ">Link navbar</a>
-                </li>
-
                 <li class="nav-item active" v-if="login">
                     <a class="nav-link" href="#">Mi cuenta</a>
                 </li>
@@ -95,7 +83,7 @@ text-transform:uppercase;
 
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark hidde-mobil" v-if="login"
-        style="background:#060d15 !important">
+        style="background:black !important">
         <a class="navbar-brand" href="#">Hola <b>{{ loginData.profile.firstname }} {{ loginData.profile.lastname
         }}</b>!</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
@@ -120,7 +108,7 @@ text-transform:uppercase;
                     style="width: 100%;display: flex;align-items: center;justify-content: center;align-content: center;color:white">
                     <img :src="'https://ui-avatars.com/api/?background=ffc107&bold=true&name=' + loginData.profile.firstname + ' ' + loginData.profile.lastname"
                         style="height: 30px;width:30px;border-radius:100%;background:rgb(255,255,255,0.1);margin-right: 10px;display:inline-block" />
-                    <span>{{ loginData.email }}</span>
+                    <span>{{ loginData.username }}</span>
                 </div>
             </span>
         </div>
@@ -130,8 +118,9 @@ text-transform:uppercase;
 
 
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark hidde-mobil"
-        style="background: linear-gradient(183deg, #050c14, transparent) !important">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark hidde-mobil" style="background:  black !important;    background: black !important;
+    position: sticky;
+    top: 0;z-index: 500;margin-top: -2px;">
         <a class="navbar-brand" href="#">
             <img src="https://cva.poker/public/cdn/img/1.svg" class="img-fluid" style="    height: 70px;" />
         </a>
@@ -149,14 +138,6 @@ font-family: 'Inter', sans-serif;
 text-transform:uppercase;
                     ">Inicio</a>
                 </li>
-                <li class="nav-item active" v-for="item in 5">
-                    <a class="nav-link" href="#" style="
-                    font-weight: 700;
-    font-size: 13px;
-font-family: 'Inter', sans-serif;
-text-transform:uppercase;
-                    ">Link navbar</a>
-                </li>
             </ul>
             <span class="navbar-text">
                 <ul class="navbar-nav mr-auto" v-if="login">
@@ -169,10 +150,27 @@ text-transform:uppercase;
                     " @click.prevent="logout()">Cerrar sesion</a>
                     </li>
                 </ul>
-                <a href="#" class="btn btn-outline-primary" style="margin-right:10px" @click.prevent="openModal()"
-                    v-if="login == false">Ingresar</a>
-                <a href="#" class="btn btn-primary" @click.prevent="registerOpen()" v-if="login == false">Crear
-                    cuenta</a>
+
+                <ul class="navbar-nav mr-auto" v-if="!login">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" style="
+                    font-weight: 700;
+    font-size: 13px;
+font-family: 'Inter', sans-serif;
+text-transform:uppercase;
+                    " @click.prevent="openModal()">Ingresar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" style="
+                    font-weight: 700;
+    font-size: 13px;
+font-family: 'Inter', sans-serif;
+text-transform:uppercase;
+                    " @click.prevent="registerOpen()">Crear
+                            cuenta</a>
+                    </li>
+                </ul>
+
 
                 <!-- <a href="#" class="btn btn-outline-primary" @click.prevent="logout()" v-if="login">Cerrar sesion</a>  -->
             </span>
@@ -258,7 +256,7 @@ text-transform:uppercase;
                     <div class="form-group">
                         <label>Nombre de usuario</label>
                         <input type="text" class="form-control" v-model="temp.login.email"
-                            placeholder="Direccion de e-mail" :disabled="temp.login.disabled" />
+                            placeholder="Nombre de usuario" :disabled="temp.login.disabled" />
                     </div>
                     <div class="form-group">
                         <label>Contraseña</label>
@@ -266,8 +264,11 @@ text-transform:uppercase;
                             placeholder="***********" :disabled="temp.login.disabled" />
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary" type="submit" style="width:100%;    height: 50px;"
-                            :disabled="temp.login.disabled">Ingresar</button>
+                        <button class="btn btn-primary" type="submit"  
+                            :disabled="temp.login.disabled" style="       width: 100%;
+    height: 50px;
+    background: linear-gradient(45deg,#000000,#004effa6);
+    border: 2px solid #0074ff;">Ingresar</button>
                         <p>Cillum nulla esse deserunt pariatur fugiat Lorem non labore sit proident ipsum do ipsum.</p>
                     </div>
                 </form>
@@ -333,7 +334,10 @@ text-transform:uppercase;
                             :disabled="temp.register.disabled" />
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary" type="submit" style="width:100%;    height: 50px;"
+                        <button class="btn btn-primary" type="submit" style="    width: 100%;
+    height: 50px;
+    background: linear-gradient(45deg,#000000,#004effa6);
+    border: 2px solid #0074ff;" 
                             :disabled="temp.register.disabled">Crear cuenta</button>
                         <p>Cillum nulla esse deserunt pariatur fugiat Lorem non labore sit proident ipsum do ipsum.</p>
                     </div>
@@ -356,7 +360,21 @@ text-transform:uppercase;
 </template>
 
 <style scoped>
-@media (max-width: 600px) {
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    font-size: 13px;
+    border: 1px solid #f7aaaa;
+    background: #ffe8e8;
+    color: #ff0000;
+    border: 2px solid red;
+    border-radius: 0;
+    background: transparent;
+}
+
+@media (max-width: 700px) {
     .hidde-mobil {
         display: none !important;
     }
@@ -365,16 +383,14 @@ text-transform:uppercase;
         display: flex !important;
         width: 100% !important;
         height: auto !important;
-        position: fixed !important;
+        position: sticky !important;
         top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
         z-index: 1000 !important;
     }
 
     .navbar-collapse {
         padding-bottom: 30px !important;
-        background: linear-gradient(359deg, rgb(5, 12, 20), transparent) !important;
+        /* background: linear-gradient(359deg, rgb(5, 12, 20), transparent) !important; */
     }
 
     .navbar-dark .navbar-nav .active>.nav-link,

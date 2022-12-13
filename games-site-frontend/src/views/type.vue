@@ -12,22 +12,23 @@
                         <typesComponent />
                     </div>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-10" style="background: #0c1014 !important;">
                     <div class="col-12" style="margin-top:30px;" v-if="games.length > 0">
                                 <h4 style="color:white;">{{ $route.params.slug }}</h4>
                             </div>
                             <gridGames :games="games" />
-
+<!-- 
 <div class="col-12" style="margin-bottom:30px;margin-top:60px;">
 
 
-                                <el-button class="btn btn-primary col-12" style="    background: #060f1b;
+                                <el-button class="btn btn-primary col-12" style="
+                                    background: transparent !important;
     color: white;
-    border: 1px solid #091525;
+    border: 1px solid #0071ff;
     padding: 20px;
-    box-shadow: 0 0 50px #06101c;" :loading="loading.nextpage" @click.prevent="nexPage()"> Cargar mas resultados
+    box-shadow: rgb(6, 16, 28) 0px 0px 50px;" :loading="loading.nextpage" @click.prevent="nexPage()"> Cargar mas resultados
                                 </el-button>
-                            </div>
+                            </div> -->
                     
 
                   
@@ -61,8 +62,7 @@ export default {
     data() {
         return {
             pagination: {
-                games: 1,
-                brands: 1,
+                games: 1, 
             },
             loading: {
                 games: true,
@@ -79,10 +79,7 @@ export default {
             setTimeout(() => {
                 this.loading.games = false;
             }, 2000)
-        })
-        sdk.brands.getAll(this.pagination.brands).then(data => {
-            this.brands = data;
-        })
+        }) 
     },
     methods: {
         nexPage() {

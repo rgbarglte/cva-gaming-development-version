@@ -62,7 +62,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> 
 
                 </div>
             </div>
@@ -108,7 +108,7 @@
 
                         <div class="form-group col-12">
                             <label class="form-control-label">Thumb</label>
-                            <el-upload show-file-list="false" class="avatar-uploader" :action="endpoint + 'brands/upload'" :on-success="
+                            <el-upload show-file-list="false" class="avatar-uploader" :action="endpoint + 'types/upload'" :on-success="
                                 (req, file) => {
                                     if (req.success) {
                                         imageUrl.value = createObject(file.raw)
@@ -203,6 +203,7 @@ export default {
             pagination: {
                 history: 0,
                 brands: 0,
+                totalPages : 30,
             },
             urlImages : "https://cvagaming.com/brands/",
             imageUrl: {
@@ -258,6 +259,10 @@ export default {
         this.loadHistory();
     },
     methods: {
+        nextPage(pages) {
+       this.pagination.brands = pages - 1;
+       this.loadHistory();
+      },
         createObject(raw) {
             console.log(raw)
             return URL.createObjectURL(raw)
@@ -290,9 +295,10 @@ export default {
             })
 
         },
+        
 
         loadHistory() {
-            sdk.brands.getAll(this.pagination.history).then(data => {
+            sdk.brands.getAll(this.pagination.brands).then(data => {
                 this.history = data;
                 this.loading.history = false;
             })

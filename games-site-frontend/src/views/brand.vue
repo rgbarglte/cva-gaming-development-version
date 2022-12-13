@@ -12,18 +12,18 @@
                         <typesComponent />
                     </div>
                 </div>
-                <div class="col-md-10">
-                    <gridGames :games="games" />
+                <div class="col-md-10" style="background: #0c1014 !important;"> 
+                    <gridGames :games="games" :brand="$route.params.slug" :brandInfo="true" />
                     
-                    <div class="col-12" style="margin-bottom:30px;margin-top:60px;" >
+                    <!-- <div class="col-12" style="margin-bottom:30px;margin-top:60px;" >
                             
                                  
-                            <el-button class="btn btn-primary col-12" style="    background: #060f1b;
-color: white;
-border: 1px solid #091525;
-padding: 20px;
-box-shadow: 0 0 50px #06101c;" :loading="loading.nextpage" @click.prevent="nexPage()"> Cargar mas resultados</el-button>
-                    </div>
+                            <el-button class="btn btn-primary col-12" style="      background: transparent !important;
+    color: white;
+    border: 1px solid #0071ff;
+    padding: 20px;
+    box-shadow: rgb(6, 16, 28) 0px 0px 50px;" :loading="loading.nextpage" @click.prevent="nexPage()"> Cargar mas resultados</el-button>
+                    </div> -->
 
 
                 </div>
@@ -56,8 +56,7 @@ export default {
     data() {
         return {
             pagination: {
-                games: 1,
-                brands: 1,
+                games: 1, 
             },
             loading: {
                 games: true,
@@ -67,23 +66,22 @@ export default {
             brands: [],
         };
     },
-    created() {
-        console.log(this.$route.params)
+    created() { 
         sdk.games.getAllByBrand(this.$route.params.slug).then(data => {
             this.games = data;
             setTimeout(() => {
                 this.loading.games = false;
             }, 2000)
         })
-        sdk.brands.getAll(this.pagination.brands).then(data => {
-            this.brands = data;
-        })
+        // sdk.brands.getAll(this.pagination.brands).then(data => {
+        //     this.brands = data;
+        // })
     },
     methods: {
         nexPage() { 
             this.loading.nextpage = true;
-            this.pagination.brands = this.pagination.brands + 1;
-            sdk.games.getAllByBrand(this.$route.params.slug,this.pagination.brands).then(data => {
+            this.pagination.games = this.pagination.games + 1;
+            sdk.games.getAllByBrand(this.$route.params.slug,this.pagination.games).then(data => {
 
              data.forEach(element => {
                  this.games.push(element);

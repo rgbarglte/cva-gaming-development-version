@@ -68,6 +68,19 @@ export default {
     });
   },
 
+  getSportsBooks: (auth = null) => {
+    return new Promise((resolve, reject) => {
+      client
+        .POST("games/get/all/sportsbook", { 
+          auth : auth
+        })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+   
+
   search: (query = null) => {
     return new Promise((resolve, reject) => {
       client

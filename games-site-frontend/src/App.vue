@@ -2,90 +2,40 @@
 
 <template>
 
+
    
-  <el-scrollbar max-height="100vh">
     <Navbar />
     <RouterView />
-    <div style="    background: linear-gradient(89deg, rgb(5 14 25), #091626);
-    position: relative;
-    border-top: 1px solid #ffffff05;">
-
-    <div class="container-fluid">
-      <div class="row">
-
-
-
-        <div class="col-md-6" style="padding:4rem">
-          <div class="row">
-            <div class="col-12 col-md-4" style="padding-top:30px;padding-bottom: 30px;">
-              <a class="col-12" style="     height: 150px;
-    background: rgb(19, 30, 44);
-    width: 100%;
-    border-radius: 5px;
-    width: 100% !important;
-    display: block;
-    animation-name: example;
-  animation-duration: 4s;"></a>
-            </div>
-
-            <div class="col-12 col-md-8"
-              style="padding-top:30px;padding-bottom: 30px;font-size:12px;color:white;font-weight: 350;">
-              Irure fugiat adipisicing pariatur elit qui esse est Lorem exercitation anim elit adipisicing tempor. Duis
-              adipisicing sint quis id. Anim sit occaecat voluptate exercitation officia ullamco mollit incididunt qui
-              occaecat minim ex. Irure voluptate nulla occaecat et est incididunt exercitation ex minim. Irure fugiat
-              adipisicing pariatur elit qui esse est Lorem exercitation anim elit adipisicing tempor. Duis adipisicing
-              sint quis id. Anim sit occaecat voluptate exercitation officia ullamco mollit incididunt qui occaecat
-              minim ex. Irure voluptate nulla occaecat et est incididunt exercitation ex minim.
-            </div>
-          </div>
-        </div> 
-
-        <div class="col-md-6" style="padding:4rem">
-          <div class="row">
-            <div class="col-12 col-md-4" style="padding-top:30px;padding-bottom: 30px;">
-              <a class="col-12" style="     height: 150px;
-    background: rgb(19, 30, 44);
-    width: 100%;
-    border-radius: 5px;
-    width: 100% !important;
-    display: block;
-    animation-name: example;
-  animation-duration: 4s;"></a>
-            </div>
-
-            <div class="col-12 col-md-8"
-              style="padding-top:30px;padding-bottom: 30px;font-size:12px;color:white;font-weight: 350;">
-              Irure fugiat adipisicing pariatur elit qui esse est Lorem exercitation anim elit adipisicing tempor. Duis
-              adipisicing sint quis id. Anim sit occaecat voluptate exercitation officia ullamco mollit incididunt qui
-              occaecat minim ex. Irure voluptate nulla occaecat et est incididunt exercitation ex minim. Irure fugiat
-              adipisicing pariatur elit qui esse est Lorem exercitation anim elit adipisicing tempor. Duis adipisicing
-              sint quis id. Anim sit occaecat voluptate exercitation officia ullamco mollit incididunt qui occaecat
-              minim ex. Irure voluptate nulla occaecat et est incididunt exercitation ex minim.
-            </div>
-          </div>
+    <div style="background: rgb(12, 16, 20);border-top: 1px solid #1a1a1a;">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12" style="
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/5m-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ae-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ao-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/b2-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/bf-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/bn-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/bs-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/bx-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ci-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/cp-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ct-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/eo-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ep-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/er-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/et-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/fg-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/fp-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/fz-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/gb-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/go-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/gr-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/gs-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/gv-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/gz-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/h8-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ha-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/hs-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/id-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ka-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/kv-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/le-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ma-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/mt-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/mv-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/nm-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/no-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ns-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/o2-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/oa-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/og-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/oh-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/om-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/or-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/os-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ov-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/oz-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/p0-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/pe-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/pf-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/pn-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ps-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/pw-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/px-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/py-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/q3-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/qf-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/qs-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/rk-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/rv-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/s2-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/sg-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/sh-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/sm-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/sp-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ss-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/th-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/tk-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/tp-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ug-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/vg-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/wo-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/xg-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ag-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/be-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/bw-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/eb-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/es-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ez-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ht-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/lg-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/ol-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/p1-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/va-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/vi-light.png" class="game-provider-logos"><img alt="" src="https://d1i1wfn7hj3mva.cloudfront.net/media/images/providersLogos/white_logos/di-light.png" class="game-provider-logos"></div>
+          
         </div>
-
-
-        <div class="col-12" style=" 
-    color: white;
-    font-size: 12px;
-    color: white;
-    opacity: 0.9;
- padding-bottom:15px;padding-top: 15px;background: #050f1b;">
-          Eu nisi fugiat aliquip laboris eiusmod reprehenderit ut magna u nisi fugiat aliquip laboris eiusmod
-          reprehenderit ut magna.
-        </div>
-
-
       </div>
     </div>
-  </div>
 
-  </el-scrollbar>
-
-
+    <div style="background: rgb(12, 16, 20);border-top: 1px solid #1a1a1a;">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6 text-center" style="   
+   color: white; font-size: 12px; opacity: 0.9; padding-bottom: 15px; padding-top: 15px;">
+            Only players above the age of 18 and who reside in countries where gambling is legal are allowed to play on
+            CVAGAMING.
+          </div> 
+          <div class="col-md-6 text-right"
+            style="color: white; font-size: 12px; opacity: 0.9; padding-bottom: 15px; padding-top: 15px;"> © 2022 <b>CVAGAMING</b>. All Rights Reserved</div>
+        </div>
+      </div>
+    </div>
 
   
+
 
   <!-- <div class="adv">
         Dolore dolore enim proident nulla nulla pariatur ea dolor minim fugiat. Non irure Lorem culpa ipsum reprehenderit laborum est incididunt. Et velit minim anim ex ex id adipisicing. Irure nulla sunt adipisicing deserunt veniam proident nisi velit cupidatat ullamco elit. Excepteur elit nulla sit et culpa aliqua.  Dolore dolore enim proident nulla nulla pariatur ea dolor minim fugiat. Non irure Lorem culpa ipsum reprehenderit laborum est incididunt. Et velit minim anim ex ex id adipisicing. Irure nulla sunt adipisicing deserunt veniam proident nisi velit cupidatat ullamco elit. Excepteur elit nulla sit et culpa aliqua.
@@ -96,9 +46,13 @@
 
 
 <style  >
-html {
-  overflow: hidden;
+ 
+img.game-provider-logos {
+    max-width: 60px;
+    margin: 10px;
+    opacity: 0.5;
 }
+ 
 .el-table__body-wrapper {
   overflow: hidden;
   position: relative;
@@ -240,24 +194,24 @@ p {
   background: #ffe8e8;
   color: #cb0000;
 }
+ 
 
-.alert-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
-  font-size: 13px;
-  border: 1px solid #63d5a3;
-  background: #e1fff4;
-  color: #079d17;
+.alert-success[data-v-688b5e20] {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    font-size: 13px;
+    border: 1px solid #f7aaaa;
+    background: #ffe8e8;
+    color: #00ff43;
+    border: 2px solid #00ff70;
+    border-radius: 0;
+    background: transparent;
 }
 
-
-
 .section-top {
-  background: linear-gradient(183deg, #050c14, transparent);
+  /* background: linear-gradient(183deg, #050c14, transparent); */
+  background: black !important;
   height: 63px;
   box-shadow: #005eff 0px 0px 150px;
   border-top: 2px solid #0071ff;
@@ -265,36 +219,45 @@ p {
 
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .section-top {
-  background: linear-gradient(183deg, #050c14, transparent);
-  height: 117px;
-  box-shadow: #005eff 0px 0px 150px;
-  border-top: 2px solid #0071ff;
-  /* border-bottom: 2px solid #0071ff; */
+    /* background: linear-gradient(183deg, #050c14, transparent); */
+    /* background: #0c1014 !important; */
+    background: black !important;
+    height: 117px;
+    box-shadow: #005eff 0px 0px 150px;
+    border-top: 2px solid #0071ff;
+    /* border-bottom: 2px solid #0071ff; */
+
+  }
+
 
 }
-
-
-}
-
 .section-mid {
-  height: auto;
-  background: rgb(9 22 38);
+    height: auto;
+    background: linear-gradient(45deg,#000000,#004effa6);
+    /* background: #0c1014!important; */
+    border-top: 1px solid #1a1a1a;
 }
-
+/* .section-mid {
+  height: auto;
+  
+  background: #0c1014 !important;
+  border-top: 1px solid #1a1a1a;
+} */
 .section-mid-left {
-  background: linear-gradient(181deg, rgb(5 14 25), transparent);
-  height: auto;
-  position: sticky;
-  padding-top: 30px;
-  top: 0px;
-  /* border-right: 2px solid #0071ff; */
+    /* background: linear-gradient(181deg, rgb(5 14 25), transparent); */
+    /* background: linear-gradient(45deg, #000000, #004effa6); */
+    height: max-content;
+    position: sticky;
+    padding-top: 30px;
+    top: 0px;
+    border-right: 1px solid #1a1a1a;
 }
 
 
-
-@media (max-width: 600px) { 
+ 
+@media (max-width: 700px) {
   .section-mid-left {
     background: linear-gradient(181deg, rgb(5 14 25), transparent);
     height: auto;
@@ -304,13 +267,17 @@ p {
     /* border-right: 2px solid #0071ff; */
     background: #040a12;
     box-shadow: 0 0 40px black;
-}
-.section-mid-left > .col-12 {
-  padding: 0 !important;
-  margin: 0 !important;
-  margin-top: 15px !important;
-  margin-bottom: 15px !important;
-}
+    padding: 0 !important;
+  }
+
+  .section-mid-left>.col-12 {
+    padding: 0 !important;
+    margin: 0 !important;
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
+    background: linear-gradient(45deg, #000000, #004effa6);
+  }
+ 
 }
 
 
@@ -364,12 +331,13 @@ p {
   font-family: 'Inter', sans-serif;
 }
 
+
 .modal-body {
   padding: 4rem;
-  background: linear-gradient(181deg, rgb(20 33 48), black) !important;
-  border: 2px solid #0068f6;
-  box-shadow: 0 0 20px black;
-  border-radius: 5px !important
+  background: black;
+  /* border: 2px solid #0068f6; */
+  /* box-shadow: 0 0 20px black; */
+  /* border-radius: 5px !important; */
 }
 
 .adv {
@@ -383,13 +351,12 @@ p {
   z-index: 2000;
 }
 
-body {
-  overflow-x: hidden !important;
-}
-
 html {
   overflow-x: hidden !important;
-}
+ }
+ body {
+  overflow-x: hidden !important;
+ }
 
 .navbar-footer-menu {
   text-decoration: none;
@@ -498,14 +465,26 @@ html {
   background: transparent !important;
 }
 
-.el-notification { 
-    background: #06101c  !important;
-    color: white !important;
-    box-shadow: 0 0 50px #0070fd  !important;
-    border: 2px solid #0070fd  !important;
+.el-notification {
+  background: #06101c !important;
+  color: white !important;
+  box-shadow: 0 0 50px #0070fd !important;
+  border: 2px solid #0070fd !important;
 }
-.el-notification__title { 
-    color: white  !important;
+
+.el-notification__title {
+  color: white !important;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #323134;
+  backdrop-filter: blur(150px);
 }
 </style>
 
@@ -522,7 +501,7 @@ import { RouterLink, RouterView } from "vue-router";
 
 import config from '@/assets/settings.js';
 import Navbar from '@/components/navbar.vue';
- 
+
 import { ElNotification } from 'element-plus'
 
 
@@ -549,11 +528,11 @@ export default {
   },
   data() {
     return {
-      socket : null
+      socket: null
     };
   },
   created() {
- 
+
     // ElNotification({
     //    title: 'Demo account',
     //    message: "Email : pruebaregistermodal@gmail.com - Password : 123",

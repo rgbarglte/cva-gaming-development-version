@@ -1,5 +1,11 @@
 import model from "./../models/history.js";
 import lodash from "lodash";
+import pkg from "jsonwebtoken";
+const { verify, sign } = pkg;
+import settings from "./../settings.js";
+
+
+
 
 const createLogin = async (userid, req, userdata = null) => {
   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
@@ -94,13 +100,32 @@ const getAll = async (pageNumber = 0) => {
   }
 };
 
-const getAllLogin = async (pageNumber = 0, filter = {}) => {
+const getAllLogin = async (pageNumber = 0, filter = {},auth = null) => {
   var pageSize = 50;
   var limit = pageSize;
   var skip = pageSize * pageNumber;
-  var search = {
-    type: "login",
-  };
+  var search;
+
+ if(auth) {
+  verify(auth, settings.jwtSecret, async function (err, decoded) {
+    if (err) {
+      return { error: 1, msg: "Token no valid" };
+    }
+    if(decoded.isAgent) {
+        search = {
+        type: "login",
+        "user.agent_id": decoded._id,
+      };
+    }
+    if(decoded.isAdmin) {
+        search = {
+        type: "login", 
+      };
+    }
+    
+  })
+
+ }
 
   if (lodash.isArray(filter.date)) {
     search.createDate = {
